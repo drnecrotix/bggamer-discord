@@ -7,6 +7,7 @@ $root = dirname(__DIR__);
 $lock = $root.'/storage/app/installed.lock';
 $keyFile = $root.'/storage/app/install.key';
 $envFile = $root.'/.env';
+require_once $root.'/installer-cleanup.php';
 header('Cache-Control: no-store');
 header('X-Content-Type-Options: nosniff');
 header('X-Robots-Tag: noindex, nofollow');
@@ -35,12 +36,19 @@ session_start();
 $_SESSION['csrf'] ??= bin2hex(random_bytes(32));
 $error = null;
 $success = false;
+$installed = false;
+$cleanupError = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         if (! hash_equals($_SESSION['csrf'], (string) ($_POST['csrf'] ?? ''))
             || ! hash_equals($expected, (string) ($_POST['install_key'] ?? ''))) {
             throw new RuntimeException('Invalid setup code or session.');
+        }
+        // Removing a file requires write access to its parent directory, not just to the file.
+        // Check before creating .env or changing the database.
+        if (! bgPortalInstallerCanSelfDelete(__FILE__)) {
+            throw new RuntimeException('PHP cannot remove public/install.php. Make the public directory writable by PHP before installing.');
         }
         $email = strtolower(trim((string) ($_POST['owner_email'] ?? '')));
         $password = (string) ($_POST['owner_password'] ?? '');
@@ -107,15 +115,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'password' => Illuminate\Support\Facades\Hash::make($password),
             'created_at' => now(), 'updated_at' => now(),
         ]);
-        file_put_contents($lock, date(DATE_ATOM), LOCK_EX);
+        if (file_put_contents($lock, date(DATE_ATOM), LOCK_EX) === false) {
+            throw new RuntimeException('Installation completed, but the lock file could not be created. Check storage permissions.');
+        }
         chmod($lock, 0600);
-        if (is_file($keyFile)) { unlink($keyFile); }
-        $success = true;
-        @unlink(__FILE__); // Lock and .env still block re-entry if FTP ownership prevents removal.
+        $installed = true;
+        if (is_file($keyFile)) { @unlink($keyFile); }
+        $success = bgPortalDeleteInstaller(__FILE__);
+        if (! $success) {
+            $cleanupError = 'Portal installed, but PHP could not remove public/install.php. Remove it via FTP now. The lock and .env block further installation.';
+            error_log('BG-GAMER portal installer self-delete failed.');
+        }
     } catch (Throwable $exception) {
         error_log('BG-GAMER portal setup failed: '.get_class($exception));
         $error = $exception instanceof RuntimeException ? $exception->getMessage() : 'Installation failed. Check server logs and database permissions.';
     }
 }
 function h(string $value): string { return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); }
-?><!doctype html><html lang="bg"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Install · BG-GAMER Portal</title><link rel="stylesheet" href="/portal.css"><main class="editor"><p class="eyebrow">BG-GAMER / FIRST RUN</p><h1>Install portal</h1><?php if ($success): ?><p class="notice success">Готово. Инсталаторът е заключен. Влез с Owner акаунта.</p><a class="button" href="/owner/login">Owner login</a><?php else: ?><p class="muted">Въведи еднократния setup code от непубличния файл storage/app/install.key.</p><?php if ($error): ?><p class="error"><?= h($error) ?></p><?php endif; ?><form method="post" autocomplete="off"><input type="hidden" name="csrf" value="<?= h($_SESSION['csrf']) ?>"><label>Setup code</label><input name="install_key" type="password" required><label>HTTPS адрес на портала</label><input name="app_url" type="url" placeholder="https://portal.example.com" required><label>Database</label><select name="db_connection"><option value="mysql">MySQL</option><option value="pgsql">PostgreSQL</option></select><label>Host</label><input name="db_host" value="127.0.0.1" required><label>Port</label><input name="db_port" value="3306" required><label>Database name</label><input name="db_database" required><label>Database user</label><input name="db_username" required><label>Database password</label><input name="db_password" type="password"><label>Owner email</label><input name="owner_email" type="email" required><label>Owner password (14+ characters)</label><input name="owner_password" type="password" minlength="14" required><button class="button">Инсталирай</button></form><?php endif; ?></main></html>
+?><!doctype html><html lang="bg"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Install · BG-GAMER Portal</title><link rel="stylesheet" href="/portal.css"><main class="editor"><p class="eyebrow">BG-GAMER / FIRST RUN</p><h1>Install portal</h1><?php if ($installed): ?><?php if ($success): ?><p class="notice success">Готово. public/install.php е изтрит успешно.</p><?php else: ?><p class="error"><?= h($cleanupError) ?></p><?php endif; ?><a class="button" href="/owner/login">Owner login</a><?php else: ?><p class="muted">Въведи еднократния setup code от непубличния файл storage/app/install.key.</p><?php if ($error): ?><p class="error"><?= h($error) ?></p><?php endif; ?><form method="post" autocomplete="off"><input type="hidden" name="csrf" value="<?= h($_SESSION['csrf']) ?>"><label>Setup code</label><input name="install_key" type="password" required><label>HTTPS адрес на портала</label><input name="app_url" type="url" placeholder="https://portal.example.com" required><label>Database</label><select name="db_connection"><option value="mysql">MySQL</option><option value="pgsql">PostgreSQL</option></select><label>Host</label><input name="db_host" value="127.0.0.1" required><label>Port</label><input name="db_port" value="3306" required><label>Database name</label><input name="db_database" required><label>Database user</label><input name="db_username" required><label>Database password</label><input name="db_password" type="password"><label>Owner email</label><input name="owner_email" type="email" required><label>Owner password (14+ characters)</label><input name="owner_password" type="password" minlength="14" required><button class="button">Инсталирай</button></form><?php endif; ?></main></html>
