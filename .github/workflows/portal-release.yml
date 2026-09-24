@@ -1,0 +1,59 @@
+name: Package portal release
+on:
+  push:
+    branches: [main]
+    paths: ['portal/RELEASE_VERSION']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  package:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, pdo_sqlite, zip
+          coverage: none
+      - name: Test portal
+        working-directory: portal
+        env:
+          APP_ENV: testing
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ':memory:'
+          SESSION_DRIVER: array
+          CACHE_STORE: array
+          QUEUE_CONNECTION: sync
+        run: |
+          composer install --no-interaction --prefer-dist
+          cp .env.example .env
+          php artisan key:generate
+          php artisan test
+      - name: Validate release and compatibility
+        run: |
+          version=$(cat portal/RELEASE_VERSION)
+          [[ "$version" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit 1
+          git rev-parse "$version" >/dev/null 2>&1 && { echo 'Tag already exists'; exit 1; }
+          previous=$(git tag --list 'v[0-9]*' | sort -V | tail -1)
+          if [ -n "$previous" ]; then
+            if git diff --name-only "$previous" HEAD -- portal/database/migrations portal/composer.json | grep -q .; then
+              echo 'Schema or dependency changes require staged FTP deployment, not a code-only release.'
+              exit 1
+            fi
+          fi
+      - name: Build code-only ZIP
+        run: |
+          zip -qr bggamer-portal.zip portal/app portal/config portal/resources portal/routes portal/public -x 'portal/public/install.php'
+          unzip -l bggamer-portal.zip | grep -q 'portal/app/Services/Discord.php'
+          unzip -l bggamer-portal.zip | grep -q 'portal/routes/web.php'
+          sha256sum bggamer-portal.zip
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version=$(cat portal/RELEASE_VERSION)
+          gh release create "$version" bggamer-portal.zip --target "$GITHUB_SHA" --title "BG-GAMER Portal $version" --notes 'Code-only portal update. No database migrations or Composer dependency changes.'

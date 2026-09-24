@@ -1,0 +1,11 @@
+storage/config/runtime-overrides.json
+storage/cache/*
+!storage/cache/.gitkeep
+storage/logs/*
+!storage/logs/.gitkeep
+.env
+.env.*
+*.private.php
+portal/storage/app/install.key
+portal/storage/app/installed.lock
+portal/storage/app/update-backups/
