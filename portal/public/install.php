@@ -16,14 +16,19 @@ if (is_file($lock) || is_file($envFile)) {
     http_response_code(404);
     exit('Installer unavailable.');
 }
-if (! is_file($root.'/vendor/autoload.php') || is_file($root.'/bootstrap/cache/config.php')) {
+if (! is_file($root.'/vendor/autoload.php')) {
     http_response_code(503);
-    exit('Upload Composer vendor/ and remove cached config before installation.');
+    exit('Installation archive is incomplete: portal/vendor/autoload.php is missing.');
+}
+$cachedConfig = $root.'/bootstrap/cache/config.php';
+if (is_file($cachedConfig) && (! @unlink($cachedConfig) || is_file($cachedConfig))) {
+    http_response_code(503);
+    exit('Cannot remove stale Laravel config cache. Check bootstrap/cache directory permissions.');
 }
 $expected = is_file($keyFile) ? trim((string) file_get_contents($keyFile)) : trim((string) getenv('BG_PORTAL_INSTALL_KEY'));
 if (strlen($expected) < 32) {
     http_response_code(503);
-    exit('Create a private storage/app/install.key with a random 32+ character setup code before opening this page.');
+    exit('Missing setup code. Upload the complete FTP installation archive including portal/storage/app/install.key.');
 }
 if (($_SERVER['HTTPS'] ?? '') !== 'on' && ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') !== 'https') {
     http_response_code(403);
