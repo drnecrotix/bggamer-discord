@@ -1,0 +1,2520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta
+    name="description"
+    content="Enter the BG-GAMER Discord lobby for live community activity, server news, game sessions, moderation tools, and a Bulgarian + English gaming hub."
+  >
+  <title>BG-GAMER | Discord Lobby</title>
+  <link rel="icon" type="image/png" href="assets/bg-gamer-logo.png?v=20260714-1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+    crossorigin="anonymous"
+  >
+  <link rel="stylesheet" href="style.css?v=20260714-7">
+  <style id="bg-gamer-inline-fallback">
+/* Deployment fallback: keep the current BG-GAMER layout when production still serves an older cached style.css. */
+:root {
+  --bg: #060b14;
+  --bg-elevated: #0d1422;
+  --surface: rgba(12, 18, 32, 0.84);
+  --surface-strong: #101827;
+  --surface-soft: rgba(17, 27, 46, 0.78);
+  --surface-highlight: rgba(22, 35, 60, 0.94);
+  --border: rgba(123, 160, 214, 0.18);
+  --border-strong: rgba(123, 160, 214, 0.34);
+  --text: #eef4ff;
+  --text-soft: #98a7c3;
+  --text-dim: #6e7f9b;
+  --discord-blue: #5ec8ff;
+  --discord-blue-strong: #8fe2ff;
+  --accent: #8d74ff;
+  --live: #f7ad4c;
+  --warning: #ff8260;
+  --success: #65d39f;
+  --shadow: 0 24px 70px rgba(0, 0, 0, 0.34);
+  --shadow-soft: 0 14px 34px rgba(0, 0, 0, 0.2);
+  --glow: 0 0 0 1px rgba(94, 200, 255, 0.12), 0 0 28px rgba(94, 200, 255, 0.1);
+  --space-1: 0.4rem;
+  --space-2: 0.7rem;
+  --space-3: 1rem;
+  --space-4: 1.35rem;
+  --space-5: 1.8rem;
+  --space-6: 2.4rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --content-width: 1200px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  overflow-x: clip;
+  font-family: "Manrope", "Segoe UI", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(94, 200, 255, 0.12), transparent 28rem),
+    radial-gradient(circle at 100% 10%, rgba(141, 116, 255, 0.14), transparent 24rem),
+    radial-gradient(circle at 100% 100%, rgba(247, 173, 76, 0.08), transparent 24rem),
+    linear-gradient(180deg, #07101c 0%, #050913 48%, #03070d 100%);
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 32%),
+    repeating-linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.018) 0,
+      rgba(255, 255, 255, 0.018) 1px,
+      transparent 1px,
+      transparent 5px
+    );
+  opacity: 0.4;
+  mix-blend-mode: screen;
+}
+
+.page-noise {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.08) 0.5px, transparent 0.5px),
+    radial-gradient(rgba(255, 255, 255, 0.05) 0.5px, transparent 0.5px);
+  background-position: 0 0, 12px 12px;
+  background-size: 24px 24px;
+  opacity: 0.06;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+code {
+  font-family: "IBM Plex Mono", monospace;
+}
+
+.container {
+  max-width: calc(var(--content-width) + 1.5rem);
+}
+
+.section-space {
+  padding: clamp(4.5rem, 8vw, 7rem) 0;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  backdrop-filter: blur(20px);
+  background: rgba(4, 10, 18, 0.78);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.topbar.is-nav-open {
+  background: rgba(5, 11, 22, 0.94);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.34);
+}
+
+.navbar {
+  min-height: 5rem;
+}
+
+.navbar > .container {
+  position: relative;
+  align-items: center;
+}
+
+.navbar-collapse {
+  flex-grow: 0;
+}
+
+.navbar-toggler {
+  width: 3rem;
+  height: 3rem;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: var(--shadow-soft);
+  color: var(--text);
+  transition: transform 180ms ease, background-color 180ms ease, border-color 180ms ease;
+}
+
+.navbar-toggler:hover,
+.navbar-toggler:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.navbar-toggler-icon {
+  width: 1.28rem;
+  height: 1.28rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba(238,244,255,0.96)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2.2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+  background-size: 100% 100%;
+  filter: none;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.78rem;
+  min-width: 0;
+  color: var(--text);
+}
+
+.brand__mark {
+  width: 3rem;
+  height: 3rem;
+  display: grid;
+  place-items: center;
+  border-radius: 1rem;
+  background: linear-gradient(145deg, rgba(94, 200, 255, 0.08), rgba(141, 116, 255, 0.14));
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.brand__logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 18px rgba(94, 200, 255, 0.08));
+}
+
+.brand__text {
+  display: grid;
+  gap: 0.12rem;
+  min-width: 0;
+}
+
+.brand__text strong {
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: clamp(1.16rem, 0.45vw + 1rem, 1.34rem);
+  line-height: 1;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.brand__text small {
+  color: rgba(238, 244, 255, 0.62);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.navbar-nav--site {
+  gap: 0.38rem;
+}
+
+.navbar-nav--site .nav-link {
+  padding-inline: 0.72rem;
+  font-size: 0.95rem;
+}
+
+.navbar-cta {
+  padding: 0.78rem 1.12rem;
+  font-size: 0.94rem;
+  white-space: nowrap;
+}
+
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.55rem 0.8rem;
+  border-radius: 14px;
+  color: var(--text-soft);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease;
+}
+
+.nav-link:hover,
+.nav-link:focus-visible {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.nav-link[aria-current="page"] {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  padding: 0.9rem 1.35rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease;
+}
+
+.btn:hover,
+.btn:focus-visible {
+  transform: translateY(-2px);
+}
+
+.btn-brand {
+  color: #041018;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(135deg, var(--discord-blue) 0%, #7bd4ff 55%, #9b74ff 100%);
+  box-shadow: 0 18px 40px rgba(94, 200, 255, 0.22);
+}
+
+.btn-brand:hover,
+.btn-brand:focus-visible {
+  color: #041018;
+  box-shadow: 0 22px 44px rgba(94, 200, 255, 0.3);
+}
+
+.btn-ghost {
+  color: var(--text);
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.btn-ghost:hover,
+.btn-ghost:focus-visible {
+  border-color: var(--border-strong);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+:focus-visible {
+  outline: 2px solid var(--discord-blue);
+  outline-offset: 3px;
+}
+
+.section-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 0.95rem;
+  color: var(--discord-blue-strong);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.section-kicker::before {
+  content: "";
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 50%;
+  border: 1px solid rgba(94, 200, 255, 0.55);
+  background: rgba(94, 200, 255, 0.18);
+}
+
+.section-kicker--inline {
+  margin-bottom: 0;
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--text-dim);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hero-shell {
+  position: relative;
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: clamp(1.5rem, 4vw, 3rem);
+  align-items: stretch;
+}
+
+.hero-copy {
+  position: relative;
+  padding-top: clamp(2rem, 8vw, 5rem);
+}
+
+.hero-copy h1,
+.section-heading h2,
+.activity-stage__head h2,
+.command-console__head h3,
+.toolkit-panel__copy h3,
+.join-lobby h2 {
+  margin: 0;
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 800;
+  line-height: 0.94;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+
+.hero-copy h1 {
+  max-width: 9ch;
+  font-size: clamp(4rem, 10vw, 7rem);
+}
+
+.hero-copy__lead {
+  max-width: 34rem;
+  margin: 1.45rem 0 0;
+  color: var(--text-soft);
+  font-size: clamp(1.02rem, 2vw, 1.18rem);
+  line-height: 1.72;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin-top: 1.9rem;
+}
+
+.hero-statusline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.9rem 1.2rem;
+  margin-top: 1.6rem;
+}
+
+.hero-statusline__text {
+  color: var(--text-soft);
+  font-size: 0.95rem;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.6rem 0.86rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-soft);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+.status-pill__dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: var(--live);
+  box-shadow: 0 0 0 0 rgba(247, 173, 76, 0.45);
+}
+
+.status-pill[data-state="live"] .status-pill__dot,
+.status-pill[data-state="partial"] .status-pill__dot {
+  background: var(--success);
+  animation: pulseDot 2.2s ease-out infinite;
+}
+
+.status-pill[data-state="demo"] .status-pill__dot {
+  background: var(--warning);
+}
+
+.hero-brief {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 2rem 0 0;
+}
+
+.hero-brief__item {
+  padding: 1rem 1rem 1.1rem;
+  border-left: 2px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0));
+}
+
+.hero-brief__item--live {
+  border-left-color: rgba(94, 200, 255, 0.62);
+  box-shadow: inset 0 0 0 1px rgba(94, 200, 255, 0.08);
+}
+
+.hero-brief dt,
+.hero-brief dd {
+  margin: 0;
+}
+
+.hero-brief dt {
+  color: var(--text-dim);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.74rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.hero-brief dd {
+  margin-top: 0.55rem;
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+
+.hero-lobby,
+.server-map,
+.activity-stage,
+.news-panel,
+.command-console,
+.toolkit-panel,
+.join-lobby {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.hero-lobby {
+  min-height: 42rem;
+  border-radius: 26px;
+}
+
+.hero-lobby__backdrop {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(145deg, rgba(5, 10, 18, 0.32), rgba(5, 10, 18, 0.88)),
+    linear-gradient(180deg, rgba(6, 11, 20, 0.12), rgba(6, 11, 20, 0.86));
+  background-position: center;
+  background-size: cover;
+  opacity: 0.42;
+}
+
+.hero-lobby__chrome {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 1.35rem;
+  height: 100%;
+  padding: 1.4rem;
+  background:
+    linear-gradient(180deg, rgba(8, 13, 22, 0.4), rgba(8, 13, 22, 0.8)),
+    linear-gradient(135deg, rgba(94, 200, 255, 0.06), rgba(141, 116, 255, 0.07));
+}
+
+.hero-lobby__head,
+.lobby-members__footer,
+.news-panel__head,
+.command-console__head,
+.site-footer__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.hero-lobby__head h2 {
+  margin: 0.32rem 0 0;
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+
+.hero-lobby__sync {
+  text-align: right;
+}
+
+.hero-lobby__sync-label,
+.hero-lobby__sync-time {
+  display: block;
+}
+
+.hero-lobby__sync-label {
+  color: var(--discord-blue-strong);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+}
+
+.hero-lobby__sync-time {
+  margin-top: 0.3rem;
+  color: var(--text-soft);
+  font-size: 0.86rem;
+}
+
+.hero-lobby__body {
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+}
+
+.lobby-voice {
+  padding: 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(145deg, rgba(14, 25, 42, 0.94), rgba(11, 18, 32, 0.78));
+  box-shadow: var(--glow);
+}
+
+.lobby-voice__head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  align-items: center;
+}
+
+.lobby-voice__head strong,
+.lobby-members__head strong {
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.lobby-voice p,
+.lobby-feed__item p,
+.lobby-members__head,
+.section-heading p,
+.server-map__preview p,
+.news-panel__intro,
+.news-item p,
+.toolkit-panel__copy p,
+.join-lobby p,
+.command-modal__lead,
+.command-modal__panel p {
+  color: var(--text-soft);
+  line-height: 1.7;
+}
+
+.lobby-voice p {
+  margin: 0.85rem 0 0;
+}
+
+.presence-bars {
+  display: flex;
+  align-items: end;
+  gap: 0.6rem;
+  height: 7rem;
+  margin-top: 1.2rem;
+}
+
+.presence-bars span {
+  flex: 1;
+  min-height: 18%;
+  border-radius: 999px 999px 0 0;
+  background: linear-gradient(180deg, rgba(94, 200, 255, 0.95), rgba(141, 116, 255, 0.72));
+  box-shadow: 0 0 20px rgba(94, 200, 255, 0.14);
+  transform-origin: bottom center;
+  animation: presenceDrift 3.8s ease-in-out infinite;
+}
+
+.presence-bars span:nth-child(2n) {
+  animation-duration: 4.4s;
+}
+
+.presence-bars span:nth-child(3n) {
+  animation-duration: 5.1s;
+}
+
+.lobby-stack {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.lobby-feed,
+.lobby-members {
+  padding: 1.15rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(9, 14, 26, 0.74);
+}
+
+.lobby-feed {
+  display: grid;
+  gap: 0.7rem;
+  border-radius: 22px;
+}
+
+.lobby-feed__item {
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.lobby-feed__item:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.lobby-feed__item span,
+.lobby-members__footer span,
+.activity-signal span,
+.activity-legend__item span,
+.activity-dock__item span,
+.ticker__label,
+.server-map__stats span,
+.toolkit-panel__list span,
+.join-lobby__meta-item span,
+.command-list__item span,
+.console-output__grid span,
+.news-item__meta,
+.server-map__preview-head p {
+  display: block;
+  color: var(--text-dim);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.lobby-feed__item p {
+  margin: 0.35rem 0 0;
+}
+
+.lobby-feed__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.65rem;
+}
+
+.lobby-feed__tags .lobby-feed__tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0.42rem 0.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.lobby-members {
+  display: grid;
+  gap: 1rem;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(13, 20, 35, 0.94), rgba(9, 14, 26, 0.92));
+}
+
+.lobby-members__head {
+  margin: 0;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.lobby-members__head strong {
+  font-size: 1.95rem;
+  line-height: 0.94;
+}
+
+.lobby-members__meta {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.avatar-stack {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(2.9rem, max-content));
+  gap: 0.6rem;
+  align-items: start;
+  justify-content: start;
+}
+
+.avatar-stack__item {
+  width: 2.95rem;
+  height: 2.95rem;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid rgba(94, 200, 255, 0.18);
+  background: linear-gradient(145deg, rgba(94, 200, 255, 0.18), rgba(141, 116, 255, 0.24));
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.18);
+}
+
+.avatar-stack__item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-stack__placeholder {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-soft);
+  font-size: 0.92rem;
+}
+
+.lobby-members__footer {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  justify-content: stretch;
+  gap: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 0.9rem;
+}
+
+.lobby-members__footer-item {
+  min-width: 0;
+  padding: 0.85rem 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.lobby-members__footer-item strong {
+  display: block;
+  margin-top: 0.38rem;
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.lobby-members__footer code,
+.join-lobby__meta-item code {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 0.38rem;
+  padding: 0.35rem 0.55rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--discord-blue-strong);
+  font-size: 0.8rem;
+  overflow-wrap: anywhere;
+}
+
+.ticker-section {
+  padding: 0 0 1rem;
+}
+
+.ticker {
+  position: relative;
+  margin-top: -0.5rem;
+  overflow: hidden;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background:
+    linear-gradient(90deg, rgba(94, 200, 255, 0.06), rgba(255, 255, 255, 0) 12%, rgba(141, 116, 255, 0.05));
+}
+
+.ticker__track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(12rem, 1fr);
+  gap: 1px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(94, 200, 255, 0.4) transparent;
+}
+
+.ticker__track::-webkit-scrollbar {
+  height: 8px;
+}
+
+.ticker__track::-webkit-scrollbar-thumb {
+  background: rgba(94, 200, 255, 0.4);
+}
+
+.ticker__item {
+  position: relative;
+  min-height: 5.7rem;
+  display: grid;
+  align-content: center;
+  gap: 0.3rem;
+  padding: 1rem 1.1rem 1.15rem;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(7, 13, 24, 0.9);
+}
+
+.ticker__item::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--discord-blue), var(--accent));
+  opacity: 0.8;
+}
+
+.ticker__value {
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 1.6rem;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.section-heading {
+  max-width: 54rem;
+  margin-bottom: clamp(2rem, 5vw, 3rem);
+}
+
+.section-heading h2 {
+  font-size: clamp(2.6rem, 6vw, 4.4rem);
+}
+
+.section-heading p {
+  max-width: 44rem;
+  margin: 1rem 0 0;
+}
+
+.server-map {
+  display: grid;
+  grid-template-columns: minmax(13rem, 16rem) minmax(0, 1fr);
+  gap: 0;
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(180deg, rgba(10, 18, 31, 0.95), rgba(8, 13, 23, 0.95)),
+    var(--surface);
+}
+
+.server-map__nav {
+  display: grid;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.server-zone {
+  position: relative;
+  padding: 1.05rem 1.2rem;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: transparent;
+  color: var(--text-soft);
+  text-align: left;
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 1.4rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition:
+    color 180ms ease,
+    background-color 180ms ease,
+    padding-left 180ms ease;
+}
+
+.server-zone::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0;
+  background: linear-gradient(180deg, var(--discord-blue), var(--accent));
+  transition: width 180ms ease;
+}
+
+.server-zone:hover,
+.server-zone:focus-visible,
+.server-zone.is-active {
+  color: var(--text);
+  padding-left: 1.45rem;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.server-zone.is-active::before,
+.server-zone:hover::before,
+.server-zone:focus-visible::before {
+  width: 3px;
+}
+
+.server-map__preview {
+  padding: clamp(1.5rem, 4vw, 2.4rem);
+}
+
+.server-map__preview-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: start;
+}
+
+.server-map__preview h3 {
+  margin: 0;
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: clamp(2.2rem, 4vw, 3.5rem);
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.server-map__preview p {
+  margin: 0.95rem 0 0;
+}
+
+.server-map__stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.4rem;
+}
+
+.server-map__stats strong {
+  display: block;
+  margin-top: 0.5rem;
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 1.55rem;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.server-map__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.35rem;
+}
+
+.server-map__tags span {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.6rem 0.75rem;
+  border-left: 2px solid rgba(94, 200, 255, 0.34);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-soft);
+  font-size: 0.92rem;
+}
+
+.server-map__foot {
+  margin-top: 1.35rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.activity-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.34fr) minmax(20rem, 0.66fr);
+  gap: 1.2rem;
+  align-items: start;
+}
+
+.activity-stage {
+  padding: clamp(1.35rem, 3vw, 2rem);
+  border-radius: 28px;
+  background:
+    linear-gradient(180deg, rgba(10, 17, 31, 0.96), rgba(7, 11, 20, 0.96)),
+    var(--surface);
+}
+
+.activity-stage__head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 24rem);
+  gap: 1.25rem;
+  align-items: end;
+}
+
+.activity-stage__head h2 {
+  font-size: clamp(2.3rem, 5vw, 4rem);
+}
+
+.activity-stage__signals {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.activity-signal {
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.activity-signal strong,
+.toolkit-panel__list strong,
+.join-lobby__meta-item strong {
+  display: block;
+  margin-top: 0.45rem;
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 1.45rem;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.activity-signal small {
+  display: block;
+  margin-top: 0.35rem;
+  color: var(--text-soft);
+  font-size: 0.82rem;
+}
+
+.activity-stage__chart {
+  margin-top: 1.3rem;
+}
+
+.activity-chart {
+  width: 100%;
+  height: auto;
+}
+
+.activity-chart__grid line {
+  stroke: rgba(255, 255, 255, 0.08);
+  stroke-width: 1;
+}
+
+.activity-chart__area {
+  fill: url(#activityAreaGradient);
+}
+
+.activity-chart__line {
+  fill: none;
+  stroke: url(#activityLineGradient);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 12px 18px rgba(94, 200, 255, 0.14));
+}
+
+.activity-chart__dot {
+  fill: #eef4ff;
+  stroke: #5ec8ff;
+  stroke-width: 3;
+}
+
+.activity-chart__label {
+  fill: var(--text-dim);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.activity-stage__footer {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(17rem, 0.85fr);
+  gap: 1.2rem;
+  margin-top: 1.1rem;
+  align-items: start;
+}
+
+.activity-stage__legend {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.activity-stage__legend > .activity-legend__item:nth-child(-n + 3) {
+  grid-column: span 2;
+}
+
+.activity-stage__legend > .activity-legend__item:nth-child(n + 4) {
+  grid-column: span 3;
+}
+
+.activity-legend__item,
+.join-lobby__meta-item {
+  padding: 0.95rem 1rem 1.05rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 0;
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.02));
+  box-shadow: inset 0 1px 0 rgba(94, 200, 255, 0.14);
+  min-height: 6.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.activity-legend__item strong {
+  display: block;
+  margin-top: 0.5rem;
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 1.85rem;
+  line-height: 1;
+}
+
+.activity-stage__dock {
+  display: grid;
+  gap: 0.85rem;
+  align-content: start;
+}
+
+.activity-dock__item {
+  min-height: 8.25rem;
+  padding: 1rem 1.05rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+}
+
+.activity-dock__item strong {
+  display: block;
+  margin-top: 0.45rem;
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 1.28rem;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.activity-dock__item small {
+  display: block;
+  margin-top: 0.55rem;
+  color: var(--text-soft);
+  line-height: 1.58;
+}
+
+.activity-stage__caption {
+  margin: 1.1rem 0 0;
+  max-width: 70ch;
+  color: var(--text-soft);
+  line-height: 1.65;
+}
+
+.news-panel {
+  padding: 1.35rem;
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, rgba(13, 20, 35, 0.96), rgba(8, 12, 22, 0.96)),
+    var(--surface);
+}
+
+.news-panel__head h3 {
+  margin: 0.35rem 0 0;
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.news-panel__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-soft);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.76rem;
+  text-transform: uppercase;
+}
+
+.news-feed {
+  display: grid;
+  gap: 0.9rem;
+  margin-top: 1.15rem;
+}
+
+.news-item {
+  display: grid;
+  gap: 0.42rem;
+  padding: 1rem;
+  border-left: 2px solid rgba(94, 200, 255, 0.3);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.news-item strong {
+  font-size: 1.05rem;
+  line-height: 1.4;
+}
+
+.news-item p {
+  margin: 0;
+}
+
+.news-item__footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  align-items: center;
+  margin-top: 0.25rem;
+}
+
+.news-item__footer time,
+.news-item__footer a {
+  color: var(--text-soft);
+  font-size: 0.88rem;
+}
+
+.news-item__footer a {
+  color: var(--discord-blue-strong);
+}
+
+.command-deck {
+  display: grid;
+  grid-template-columns: minmax(0, 1.16fr) minmax(21rem, 0.84fr);
+  gap: 1.2rem;
+}
+
+.command-console {
+  padding: 1.4rem;
+  border-radius: 26px;
+  background:
+    linear-gradient(180deg, rgba(10, 18, 32, 0.96), rgba(7, 11, 20, 0.96)),
+    var(--surface);
+}
+
+.command-console__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 0.72rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-soft);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.command-console__layout {
+  display: grid;
+  grid-template-columns: minmax(12rem, 16rem) minmax(0, 1fr);
+  gap: 1rem;
+  margin-top: 1.1rem;
+}
+
+.command-list {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.command-list__item {
+  display: grid;
+  gap: 0.5rem;
+  align-content: start;
+  min-height: 6rem;
+  padding: 0.95rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.command-list__item code {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 0.32rem 0.72rem;
+  border-radius: 999px;
+  background: rgba(141, 116, 255, 0.14);
+  color: var(--discord-blue-strong);
+  font-size: 0.98rem;
+  font-weight: 600;
+}
+
+.command-list__item p {
+  margin: 0;
+  color: var(--text-soft);
+  line-height: 1.58;
+}
+
+.console-output {
+  display: grid;
+  gap: 0.9rem;
+  min-height: 100%;
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 22px;
+  background:
+    linear-gradient(180deg, rgba(9, 15, 25, 0.96), rgba(8, 13, 22, 0.96)),
+    rgba(255, 255, 255, 0.02);
+}
+
+.console-output__terminal {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  color: var(--text-dim);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+}
+
+.console-output__cursor {
+  color: var(--success);
+}
+
+.console-output__card {
+  display: grid;
+  gap: 0.65rem;
+  padding: 0.2rem 0 0;
+}
+
+.console-output__card small {
+  display: block;
+  color: var(--discord-blue-strong);
+  font-family: "IBM Plex Mono", monospace;
+  text-transform: uppercase;
+}
+
+.console-output__card h4 {
+  margin: 0.2rem 0 0;
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: clamp(1.65rem, 3vw, 2.2rem);
+  line-height: 0.98;
+  text-transform: uppercase;
+}
+
+.console-output__card p {
+  margin: 0;
+  color: var(--text-soft);
+  line-height: 1.68;
+}
+
+.console-output__stack {
+  display: grid;
+  gap: 0;
+  margin-top: 0.2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.console-output__row {
+  display: grid;
+  grid-template-columns: minmax(7.5rem, 8.6rem) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.console-output__row:last-child {
+  border-bottom: 0;
+}
+
+.console-output__row code {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 0.3rem 0.62rem;
+  border-radius: 999px;
+  background: rgba(94, 200, 255, 0.08);
+  color: var(--discord-blue-strong);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.console-output__row p,
+.console-output__hint {
+  margin: 0;
+  color: var(--text-soft);
+  line-height: 1.62;
+}
+
+.console-output__hint {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+}
+
+.toolkit-panel {
+  display: grid;
+  align-items: stretch;
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, rgba(11, 18, 31, 0.96), rgba(7, 11, 21, 0.96)),
+    var(--surface);
+}
+
+.toolkit-panel__copy {
+  padding: 1.3rem;
+}
+
+.toolkit-panel__list {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 1.15rem;
+}
+
+.toolkit-panel__list div {
+  padding: 0.95rem 1rem;
+  border-left: 2px solid rgba(94, 200, 255, 0.28);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.toolkit-panel__media {
+  padding: 0 1.3rem 1.3rem;
+}
+
+.toolkit-shot {
+  width: 100%;
+  height: auto;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.identity-manifesto {
+  display: grid;
+  grid-template-columns: minmax(11rem, 14rem) minmax(0, 1fr);
+  gap: 2rem;
+  align-items: start;
+}
+
+.identity-manifesto__label {
+  color: var(--discord-blue-strong);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.identity-manifesto__body p {
+  margin: 0;
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: clamp(2.1rem, 5vw, 4.25rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+
+.identity-manifesto__body p + p {
+  margin-top: 0.55rem;
+}
+
+.identity-manifesto__body p:last-child {
+  color: var(--text-soft);
+}
+
+.join-lobby {
+  display: grid;
+  gap: 1.4rem;
+  padding: clamp(1.4rem, 3vw, 2rem);
+  border-radius: 28px;
+  background:
+    linear-gradient(145deg, rgba(15, 23, 40, 0.98), rgba(8, 12, 22, 0.98)),
+    var(--surface);
+}
+
+.join-lobby__brand {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 1.2rem;
+  align-items: start;
+}
+
+.join-lobby__logo {
+  width: 5rem;
+  height: 5rem;
+  object-fit: contain;
+}
+
+.join-lobby__meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.join-lobby__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+}
+
+.command-modal__content {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, rgba(13, 20, 34, 0.98), rgba(8, 12, 22, 0.98)),
+    var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow);
+}
+
+.command-modal__eyebrow {
+  color: var(--discord-blue-strong);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.command-modal__header h2 {
+  margin: 0.35rem 0 0;
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  text-transform: uppercase;
+}
+
+.command-modal__body {
+  padding-top: 0;
+}
+
+.command-modal__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.2rem;
+}
+
+.command-modal__panel {
+  padding: 1rem;
+  border-left: 2px solid rgba(94, 200, 255, 0.28);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.command-modal__panel strong {
+  display: block;
+  color: var(--text);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.command-modal__panel p {
+  margin: 0.7rem 0 0;
+}
+
+.site-footer {
+  padding: 1.6rem 0 2.2rem;
+  color: var(--text-soft);
+}
+
+.site-footer__inner {
+  padding-top: 1.1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 1.25rem;
+  text-transform: uppercase;
+}
+
+.footer-brand__logo {
+  width: 1.45rem;
+  height: 1.45rem;
+  object-fit: contain;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 700ms ease,
+    transform 700ms ease;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.is-hidden {
+  display: none !important;
+}
+
+@keyframes pulseDot {
+  0% {
+    box-shadow: 0 0 0 0 rgba(101, 211, 159, 0.46);
+  }
+
+  70% {
+    box-shadow: 0 0 0 14px rgba(101, 211, 159, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(101, 211, 159, 0);
+  }
+}
+
+@keyframes presenceDrift {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+
+  50% {
+    transform: scaleY(0.92);
+  }
+}
+
+@media (max-width: 1199.98px) {
+  .brand__text strong {
+    font-size: 1.18rem;
+  }
+
+  .brand__text small {
+    font-size: 0.68rem;
+  }
+
+  .navbar-nav--site {
+    gap: 0.18rem;
+  }
+
+  .navbar-nav--site .nav-link {
+    padding-inline: 0.58rem;
+    font-size: 0.88rem;
+  }
+
+  .navbar-cta {
+    padding: 0.72rem 0.98rem;
+    font-size: 0.88rem;
+  }
+
+  .activity-stage__head,
+  .activity-stage__footer,
+  .command-deck {
+    grid-template-columns: 1fr;
+  }
+
+  .activity-stage__dock {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .command-deck {
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 991.98px) {
+  body.mobile-nav-open {
+    overflow: hidden;
+  }
+
+  .navbar {
+    min-height: 5.35rem;
+  }
+
+  .navbar-brand {
+    max-width: calc(100% - 4.25rem);
+    margin-right: 0;
+  }
+
+  .navbar-toggler {
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  .navbar-collapse.show,
+  .navbar-collapse.collapsing {
+    position: absolute;
+    top: calc(100% - 0.3rem);
+    left: 0;
+    right: 0;
+    z-index: 1001;
+    display: grid !important;
+    justify-content: stretch !important;
+    align-items: stretch !important;
+    gap: 1rem;
+    margin-top: 0;
+    padding: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    background: linear-gradient(180deg, rgba(7, 12, 24, 0.98), rgba(16, 12, 28, 0.96));
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  }
+
+  .navbar-collapse .navbar-nav {
+    width: 100%;
+    gap: 0.45rem;
+    margin-bottom: 0.15rem;
+  }
+
+  .navbar-collapse .nav-link {
+    width: 100%;
+    justify-content: flex-start;
+    padding: 0.95rem 1rem;
+    font-size: clamp(1rem, 3.6vw, 1.15rem);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+  }
+
+  .navbar-collapse .nav-link:hover,
+  .navbar-collapse .nav-link:focus-visible,
+  .navbar-collapse .nav-link[aria-current="page"] {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.16);
+  }
+
+  .navbar-collapse .btn {
+    width: 100%;
+  }
+
+  .navbar-collapse .btn-brand,
+  .navbar-collapse .btn-ghost {
+    margin-left: 0 !important;
+  }
+
+  .hero-shell {
+    min-height: auto;
+  }
+
+  .hero-grid,
+  .server-map,
+  .lobby-stack,
+  .activity-layout,
+  .command-console__layout,
+  .identity-manifesto,
+  .join-lobby__brand {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-copy {
+    padding-top: 1rem;
+  }
+
+  .hero-copy h1 {
+    max-width: 11ch;
+  }
+
+  .hero-lobby {
+    min-height: auto;
+  }
+
+  .server-map__nav {
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(9rem, 1fr);
+    overflow-x: auto;
+    border-right: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .server-zone {
+    min-height: 4.25rem;
+    border-bottom: 0;
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 1.2rem;
+  }
+
+  .server-zone::before {
+    width: 100%;
+    height: 0;
+    inset: auto 0 0 0;
+    transition: height 180ms ease;
+  }
+
+  .server-zone.is-active::before,
+  .server-zone:hover::before,
+  .server-zone:focus-visible::before {
+    width: 100%;
+    height: 3px;
+  }
+
+  .activity-stage__legend,
+  .join-lobby__meta {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .activity-stage__legend > .activity-legend__item,
+  .lobby-members__footer {
+    grid-column: auto;
+  }
+
+  .lobby-members__footer {
+    grid-template-columns: 1fr;
+  }
+
+  .toolkit-panel__media {
+    padding-top: 0;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .section-space {
+    padding: 3.8rem 0;
+  }
+
+  .brand__text strong {
+    font-size: 1.12rem;
+  }
+
+  .brand__text small {
+    display: none;
+  }
+
+  .hero-copy h1 {
+    font-size: clamp(3.4rem, 16vw, 5rem);
+  }
+
+  .hero-brief,
+  .server-map__stats,
+  .activity-stage__legend,
+  .activity-stage__dock,
+  .console-output__row,
+  .console-output__grid,
+  .command-modal__grid,
+  .join-lobby__meta {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-brief {
+    gap: 0.8rem;
+  }
+
+  .hero-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .hero-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .ticker__track {
+    grid-auto-columns: minmax(11rem, 80vw);
+  }
+
+  .activity-stage,
+  .news-panel,
+  .command-console,
+  .toolkit-panel,
+  .join-lobby {
+    border-radius: 20px;
+  }
+
+  .identity-manifesto__body p {
+    font-size: clamp(1.7rem, 10vw, 3rem);
+  }
+
+  .join-lobby__logo {
+    width: 4rem;
+    height: 4rem;
+  }
+
+  .site-footer__inner {
+    flex-direction: column;
+    align-items: start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+  </style>
+</head>
+<body
+  data-sync-state="loading"
+  data-nav-page="lobby"
+  data-invite-url="https://discord.gg/PFkjeKBuxH"
+  data-rules-url="https://discord.com/channels/114667416247599110/1035251098031755294"
+  data-nav-cta="invite"
+>
+  <div class="page-noise" aria-hidden="true"></div>
+
+  <header class="topbar" id="top">
+    <nav class="navbar navbar-expand-lg" data-site-nav>
+      <div class="container">
+        <a class="navbar-brand brand" href="#top" aria-label="BG-GAMER home">
+          <span class="brand__mark">
+            <img src="assets/bg-gamer-logo.png" alt="BG-GAMER logo" class="brand__logo">
+          </span>
+          <span class="brand__text">
+            <strong>BG-GAMER</strong>
+            <small>Gaming community</small>
+          </span>
+        </a>
+
+        <button
+          class="navbar-toggler border-0 shadow-none"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#siteNav"
+          aria-controls="siteNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse justify-content-end" id="siteNav">
+          <ul class="navbar-nav navbar-nav--site align-items-lg-center mb-3 mb-lg-0" data-site-nav-list>
+            <li class="nav-item"><a class="nav-link" href="#top" aria-current="page">Lobby</a></li>
+            <li class="nav-item"><a class="nav-link" href="#activity">Activity</a></li>
+            <li class="nav-item"><a class="nav-link" href="#bots">Bots</a></li>
+            <li class="nav-item"><a class="nav-link" href="bans/">Bans</a></li>
+            <li class="nav-item"><a class="nav-link" href="appeal/">Appeal</a></li>
+            <li class="nav-item"><a class="nav-link" href="https://discord.com/channels/114667416247599110/1035251098031755294">Rules</a></li>
+            <li class="nav-item"><a class="nav-link" href="mod/">Mod Panel</a></li>
+          </ul>
+          <div class="site-nav__actions" data-site-nav-actions>
+            <a class="btn btn-brand navbar-cta ms-lg-4" href="https://discord.gg/PFkjeKBuxH" data-discord-link>Open Invite</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero-shell section-space">
+      <div class="container">
+        <div class="hero-grid">
+          <div class="hero-copy reveal" data-parallax-layer="copy">
+            <span class="section-kicker">Bulgarian + English gaming Discord</span>
+            <h1>Enter the BG-GAMER lobby.</h1>
+            <p class="hero-copy__lead">
+              Live squads, game talk, Discord help, voice rooms, news drops, and a community that is active before you even join.
+            </p>
+
+            <div class="hero-actions">
+              <a class="btn btn-brand btn-lg" href="https://discord.gg/PFkjeKBuxH" data-discord-link>Join Discord</a>
+              <a class="btn btn-ghost btn-lg" href="#activity">View live activity</a>
+            </div>
+
+            <div class="hero-statusline">
+              <span class="status-pill" id="statsStatus" aria-live="polite">
+                <span class="status-pill__dot"></span>
+                <span class="status-pill__label" id="statsStatusText">Syncing server data</span>
+              </span>
+              <span class="hero-statusline__text" id="statsSourceText">Discord invite, widget, and connected live feeds</span>
+            </div>
+
+            <dl class="hero-brief">
+              <div class="hero-brief__item">
+                <dt>Members</dt>
+                <dd data-counter data-stat-key="members">--</dd>
+              </div>
+              <div class="hero-brief__item hero-brief__item--live">
+                <dt>Online now</dt>
+                <dd data-counter data-stat-key="online">--</dd>
+              </div>
+              <div class="hero-brief__item">
+                <dt>Voice users</dt>
+                <dd id="heroVoiceCount">--</dd>
+              </div>
+            </dl>
+          </div>
+
+          <aside class="hero-lobby reveal" data-parallax-layer="lobby" aria-label="Live Discord lobby">
+            <div class="hero-lobby__backdrop" id="heroBackdrop"></div>
+
+            <div class="hero-lobby__chrome">
+              <div class="hero-lobby__head">
+                <div>
+                  <p class="eyebrow">Live lobby</p>
+                  <h2 id="heroServerName">BG-GAMER</h2>
+                </div>
+                <div class="hero-lobby__sync">
+                  <span class="hero-lobby__sync-label" id="heroServerStatus">Connecting</span>
+                  <span class="hero-lobby__sync-time" id="statsUpdatedText">Waiting for first sync</span>
+                </div>
+              </div>
+
+              <div class="hero-lobby__body">
+                <section class="lobby-voice">
+                  <div class="lobby-voice__head">
+                    <span class="section-kicker section-kicker--inline">Voice activity</span>
+                    <strong id="heroVoiceRoom">Waiting for channel data</strong>
+                  </div>
+                  <p id="heroVoiceText">Syncing current online presence and active room state.</p>
+                  <div class="presence-bars" data-presence-visual aria-hidden="true">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                </section>
+
+                <div class="lobby-stack">
+                  <section class="lobby-feed">
+                    <div class="lobby-feed__item">
+                      <span>Server profile</span>
+                      <p id="heroProfileText">Pulling the current community description from Discord.</p>
+                    </div>
+                    <div class="lobby-feed__item">
+                      <span>Visible rooms</span>
+                      <div class="lobby-feed__tags" id="heroChannelTags" aria-label="Visible room highlights">
+                        <span class="lobby-feed__tag">Checking public channels and lobby routes.</span>
+                      </div>
+                    </div>
+                    <div class="lobby-feed__item">
+                      <span>Current game signal</span>
+                      <p id="heroGameText">Looking for live game activity in the widget feed.</p>
+                    </div>
+                  </section>
+
+                  <section class="lobby-members">
+                    <div class="lobby-members__head">
+                      <span class="section-kicker section-kicker--inline">Online now</span>
+                      <strong id="heroActivityText">Syncing member presence</strong>
+                      <p class="lobby-members__meta" id="heroMembersMeta">Watching voice activity and member presence.</p>
+                    </div>
+                    <div class="avatar-stack" id="heroAvatarStack" aria-label="Online member avatars"></div>
+                    <div class="lobby-members__footer">
+                      <div class="lobby-members__footer-item">
+                        <span>Server boosts</span>
+                        <strong id="heroBoostsText">Boost sync pending</strong>
+                      </div>
+                      <div class="lobby-members__footer-item">
+                        <span>Join code</span>
+                        <code id="heroInviteText">discord.gg/PFkjeKBuxH</code>
+                      </div>
+                    </div>
+                  </section>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="ticker-section">
+      <div class="container">
+        <div class="ticker reveal" aria-label="Live community strip">
+          <div class="ticker__track">
+            <article class="ticker__item">
+              <span class="ticker__label">Online members</span>
+              <strong class="ticker__value" data-counter data-stat-key="online" id="tickerOnlineValue">--</strong>
+            </article>
+            <article class="ticker__item">
+              <span class="ticker__label">Total members</span>
+              <strong class="ticker__value" data-counter data-stat-key="members" id="tickerMembersValue">--</strong>
+            </article>
+            <article class="ticker__item">
+              <span class="ticker__label">Active voice</span>
+              <strong class="ticker__value" id="tickerVoiceValue">Syncing</strong>
+            </article>
+            <article class="ticker__item">
+              <span class="ticker__label">Latest news</span>
+              <strong class="ticker__value" id="tickerEventValue">Checking feed</strong>
+            </article>
+            <article class="ticker__item">
+              <span class="ticker__label">Server boosts</span>
+              <strong class="ticker__value" data-counter data-stat-key="boosts" id="tickerBoostsValue">--</strong>
+            </article>
+            <article class="ticker__item">
+              <span class="ticker__label">Most active channel</span>
+              <strong class="ticker__value" id="tickerTextChannelValue">Awaiting stats</strong>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-space server-map-section" id="community-features">
+      <div class="container">
+        <div class="section-heading reveal">
+          <span class="section-kicker">Explore the server</span>
+          <h2>Read the server like a map, not a stack of feature cards.</h2>
+          <p>
+            Welcome flow, gaming rooms, voice spaces, support routing, news signals, and community hangouts are grouped into a single navigator.
+          </p>
+        </div>
+
+        <div class="server-map reveal">
+          <div class="server-map__nav" role="tablist" aria-label="Server zones">
+            <button class="server-zone is-active" type="button" data-zone-id="welcome" aria-selected="true">Welcome</button>
+            <button class="server-zone" type="button" data-zone-id="gaming" aria-selected="false">Gaming</button>
+            <button class="server-zone" type="button" data-zone-id="voice" aria-selected="false">Voice</button>
+            <button class="server-zone" type="button" data-zone-id="support" aria-selected="false">Support</button>
+            <button class="server-zone" type="button" data-zone-id="news" aria-selected="false">Server News</button>
+            <button class="server-zone" type="button" data-zone-id="community" aria-selected="false">Community</button>
+            <button class="server-zone" type="button" data-zone-id="afterdark" aria-selected="false">After Dark</button>
+          </div>
+
+          <article class="server-map__preview" aria-live="polite">
+            <div class="server-map__preview-head">
+              <span class="section-kicker">Zone preview</span>
+              <p id="zonePreviewMeta">Live route summary</p>
+            </div>
+            <h3 id="zonePreviewTitle">Welcome</h3>
+            <p id="zonePreviewLead">Loading entry flow and visible channel structure.</p>
+            <div class="server-map__stats">
+              <div>
+                <span>Primary</span>
+                <strong id="zonePreviewStatOne">Syncing</strong>
+              </div>
+              <div>
+                <span>Secondary</span>
+                <strong id="zonePreviewStatTwo">Syncing</strong>
+              </div>
+              <div>
+                <span>Current pulse</span>
+                <strong id="zonePreviewStatThree">Syncing</strong>
+              </div>
+            </div>
+            <div class="server-map__tags" id="zonePreviewTags"></div>
+            <p class="server-map__foot" id="zonePreviewFoot">Live Discord data will fill this panel after the first sync.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-space activity-section" id="activity">
+      <div class="container">
+        <div class="activity-layout">
+          <article class="activity-stage reveal">
+            <div class="activity-stage__head">
+              <div>
+                <span class="section-kicker">Live community activity</span>
+                <h2>Server movement, message pulse, voice presence, and text momentum.</h2>
+              </div>
+              <div class="activity-stage__signals">
+                <div class="activity-signal">
+                  <span>Activity ratio</span>
+                  <strong id="chartActivityRatio">--</strong>
+                </div>
+                <div class="activity-signal">
+                  <span>Voice room</span>
+                  <strong id="chartRoomLabel">Syncing</strong>
+                </div>
+                <div class="activity-signal">
+                  <span>Most active text channel</span>
+                  <strong id="chartTextChannelLabel">Awaiting proxy</strong>
+                  <small id="chartTextChannelMeta">Connect message stats feed</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="activity-stage__chart">
+              <svg
+                class="activity-chart"
+                id="serverChartSvg"
+                viewBox="0 0 920 360"
+                role="img"
+                aria-label="Live server activity chart from Discord message liveliness and current community metrics"
+              >
+                <defs>
+                  <linearGradient id="activityAreaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#5ec8ff" stop-opacity="0.4"></stop>
+                    <stop offset="100%" stop-color="#5ec8ff" stop-opacity="0.02"></stop>
+                  </linearGradient>
+                  <linearGradient id="activityLineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#7cd8ff"></stop>
+                    <stop offset="45%" stop-color="#5ec8ff"></stop>
+                    <stop offset="100%" stop-color="#9b74ff"></stop>
+                  </linearGradient>
+                </defs>
+
+                <g class="activity-chart__grid">
+                  <line x1="44" y1="58" x2="876" y2="58"></line>
+                  <line x1="44" y1="128" x2="876" y2="128"></line>
+                  <line x1="44" y1="198" x2="876" y2="198"></line>
+                  <line x1="44" y1="268" x2="876" y2="268"></line>
+                  <line x1="44" y1="318" x2="876" y2="318"></line>
+                </g>
+
+                <path class="activity-chart__area" id="serverChartArea" d=""></path>
+                <path class="activity-chart__line" id="serverChartLine" d=""></path>
+                <g id="serverChartDots"></g>
+                <g id="serverChartLabels"></g>
+              </svg>
+            </div>
+
+            <div class="activity-stage__footer">
+              <div class="activity-stage__legend">
+                <div class="activity-legend__item">
+                  <span>Members</span>
+                  <strong id="chartMembersValue">--</strong>
+                </div>
+                <div class="activity-legend__item">
+                  <span>Online</span>
+                  <strong id="chartOnlineValue">--</strong>
+                </div>
+                <div class="activity-legend__item">
+                  <span>Visible channels</span>
+                  <strong id="chartChannelsValue">--</strong>
+                </div>
+                <div class="activity-legend__item">
+                  <span>Boosts</span>
+                  <strong id="chartBoostsValue">--</strong>
+                </div>
+                <div class="activity-legend__item">
+                  <span>In voice</span>
+                  <strong id="chartVoiceValue">--</strong>
+                </div>
+              </div>
+
+              <div class="activity-stage__dock">
+                <div class="activity-dock__item">
+                  <span>Latest post</span>
+                  <strong id="activityNewsTitle">Waiting for website feed</strong>
+                  <small id="activityNewsMeta">Connect the BG-GAMER RSS feed to populate this signal.</small>
+                </div>
+                <div class="activity-dock__item">
+                  <span>Current game pulse</span>
+                  <strong id="activityGameTitle">Looking for live games</strong>
+                  <small id="activityGameMeta">Widget activity will appear here when members are in-game.</small>
+                </div>
+              </div>
+            </div>
+
+            <p class="activity-stage__caption" id="serverGraphCaption">
+              Syncing invite liveliness bins, voice presence, and message insights.
+            </p>
+          </article>
+
+          <aside class="news-panel reveal">
+            <div class="news-panel__head">
+              <div>
+                <span class="section-kicker">Server news</span>
+                <h3>Latest posts from BG-GAMER.com.</h3>
+              </div>
+              <span class="news-panel__badge" id="newsFeedBadge">Connecting</span>
+            </div>
+            <p class="news-panel__intro" id="newsFeedIntro">
+              Pulling recent posts from the BG-GAMER RSS feed.
+            </p>
+            <div class="news-feed" id="newsFeed">
+              <article class="news-item">
+                <span class="news-item__meta">Syncing</span>
+                <strong>Checking the BG-GAMER RSS feed...</strong>
+                <p>The page is waiting for the latest site posts to load.</p>
+              </article>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-space commands-section" id="bots">
+      <div class="container">
+        <div class="section-heading reveal">
+          <span class="section-kicker">Bot and commands</span>
+          <h2>Atlas Guard is shown like a real Discord slash-command reference.</h2>
+          <p>
+            The core member commands are listed the way they feel inside Discord: simple, fast to scan, and not dressed up like a clickable product demo.
+          </p>
+        </div>
+
+        <div class="command-deck">
+          <article class="command-console reveal">
+            <div class="command-console__head">
+              <div>
+                <span class="section-kicker">Atlas Guard</span>
+                <h3>Server command console</h3>
+              </div>
+              <span class="command-console__badge">Slash commands</span>
+            </div>
+
+            <div class="command-console__layout">
+              <div class="command-list" aria-label="Atlas Guard commands">
+                <div class="command-list__item">
+                  <span>New members</span>
+                  <code>/verify</code>
+                  <p>Unlock onboarding and move visitors into the main server flow.</p>
+                </div>
+                <div class="command-list__item">
+                  <span>Roles and alerts</span>
+                  <code>/roles</code>
+                  <p>Pick game roles, language lanes, and the notifications that matter.</p>
+                </div>
+                <div class="command-list__item">
+                  <span>Private support</span>
+                  <code>/ticket</code>
+                  <p>Move moderation, setup issues, or sensitive reports out of public chat.</p>
+                </div>
+                <div class="command-list__item">
+                  <span>Server activity</span>
+                  <code>/events</code>
+                  <p>Check the current event schedule and planned community sessions.</p>
+                </div>
+                <div class="command-list__item">
+                  <span>Quick overview</span>
+                  <code>/serverinfo</code>
+                  <p>Get a clean snapshot of the server structure without hunting through channels.</p>
+                </div>
+              </div>
+
+              <div class="console-output">
+                <div class="console-output__terminal">
+                  <span class="console-output__prompt">atlas_guard / slash-commands</span>
+                  <span class="console-output__cursor">online</span>
+                </div>
+
+                <div class="console-output__card">
+                  <small id="consoleBotName">Atlas Guard</small>
+                  <h4>Core member flow</h4>
+                  <p>
+                    Atlas Guard keeps onboarding, self-service roles, private help, event lookup, and server orientation inside Discord with lightweight slash commands.
+                  </p>
+                </div>
+
+                <div class="console-output__stack">
+                  <div class="console-output__row">
+                    <code>/verify</code>
+                    <p>Runs the onboarding gate and unlocks the right starter access for new members.</p>
+                  </div>
+                  <div class="console-output__row">
+                    <code>/roles</code>
+                    <p>Lets members manage games, pings, and language preferences without waiting for staff.</p>
+                  </div>
+                  <div class="console-output__row">
+                    <code>/ticket</code>
+                    <p>Opens a private support route when something should not stay in the public timeline.</p>
+                  </div>
+                  <div class="console-output__row">
+                    <code>/events</code>
+                    <p>Shows the live schedule when game nights, giveaways, or server sessions are active.</p>
+                  </div>
+                </div>
+
+                <p class="console-output__hint">This panel is a quick Discord-style command reference, not an interactive demo.</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="toolkit-panel reveal">
+            <div class="toolkit-panel__copy">
+              <span class="section-kicker">Server operations</span>
+              <h3>Moderation, entry flow, language routing, and live community visibility.</h3>
+              <p id="toolkitIntro">
+                Loading public server structure, language signals, and current voice presence.
+              </p>
+              <div class="toolkit-panel__list">
+                <div>
+                  <span>Entry point</span>
+                  <strong id="toolkitEntryPoint">Syncing</strong>
+                </div>
+                <div>
+                  <span>Language spaces</span>
+                  <strong id="toolkitLanguages">Syncing</strong>
+                </div>
+                <div>
+                  <span>Live structure</span>
+                  <strong id="toolkitStructure">Syncing</strong>
+                </div>
+              </div>
+            </div>
+            <div class="toolkit-panel__media">
+              <img
+                src="assets/atlas-guard-shot.svg"
+                alt="BG-GAMER Atlas Guard mock interface"
+                class="toolkit-shot"
+                loading="lazy"
+              >
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-space identity-section">
+      <div class="container">
+        <div class="identity-manifesto reveal">
+          <div class="identity-manifesto__label">Community identity</div>
+          <div class="identity-manifesto__body">
+            <p>Bulgarian and English, side by side.</p>
+            <p>Game nights, voice rooms, clips, squads, fixes, and real moderation.</p>
+            <p id="identityPulse">Live signals from Discord keep the page grounded in the server, not in placeholder marketing copy.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-space join-section" id="join">
+      <div class="container">
+        <div class="join-lobby reveal">
+          <div class="join-lobby__brand">
+            <img src="assets/bg-gamer-logo.png" alt="BG-GAMER logo" class="join-lobby__logo">
+            <div>
+              <span class="section-kicker">Ready to enter the lobby?</span>
+              <h2>Join BG-GAMER while the server is live.</h2>
+              <p>
+                The invite is ready, the status is synced, and the live counters below come from the same Discord data shown across the page.
+              </p>
+            </div>
+          </div>
+
+          <div class="join-lobby__meta">
+            <div class="join-lobby__meta-item">
+              <span>Online now</span>
+              <strong id="ctaOnlineValue" data-counter data-stat-key="online">--</strong>
+            </div>
+            <div class="join-lobby__meta-item">
+              <span>Invite</span>
+              <code id="ctaInviteText">discord.gg/PFkjeKBuxH</code>
+            </div>
+            <div class="join-lobby__meta-item">
+              <span>Connection</span>
+              <strong id="ctaStatusText">Syncing server data</strong>
+            </div>
+          </div>
+
+          <div class="join-lobby__actions">
+            <a class="btn btn-brand btn-lg" href="https://discord.gg/PFkjeKBuxH" data-discord-link>Open BG-GAMER Invite</a>
+            <a class="btn btn-ghost btn-lg" href="#community-features">Explore the server map</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="site-footer__inner">
+        <span class="footer-brand">
+          <img src="assets/bg-gamer-logo.png" alt="BG-GAMER logo" class="footer-brand__logo">
+          <span>BG-GAMER</span>
+        </span>
+        <span>Discord lobby, server map, live activity, server news, and command console.</span>
+      </div>
+    </div>
+  </footer>
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"
+  ></script>
+  <script src="assets/site-nav.js?v=20260714-4"></script>
+  <script src="script.js?v=20260714-2"></script>
+</body>
+</html>
