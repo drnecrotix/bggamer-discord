@@ -1,0 +1,22 @@
+CREATE TABLE IF NOT EXISTS `discord_mod_audit_log` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `actor_discord_id` VARCHAR(32) DEFAULT NULL,
+  `actor_username` VARCHAR(80) NOT NULL,
+  `actor_display_name` VARCHAR(120) DEFAULT NULL,
+  `actor_role_keys` VARCHAR(190) DEFAULT NULL,
+  `action_type` VARCHAR(64) NOT NULL,
+  `action_result` ENUM('success', 'error', 'info') NOT NULL DEFAULT 'success',
+  `target_type` VARCHAR(64) DEFAULT NULL,
+  `target_discord_id` VARCHAR(32) DEFAULT NULL,
+  `target_reference` VARCHAR(64) DEFAULT NULL,
+  `target_label` VARCHAR(190) DEFAULT NULL,
+  `summary` VARCHAR(255) NOT NULL,
+  `details_json` LONGTEXT DEFAULT NULL,
+  `ip_address` VARCHAR(45) DEFAULT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_discord_mod_audit_actor` (`actor_discord_id`),
+  KEY `idx_discord_mod_audit_action` (`action_type`),
+  KEY `idx_discord_mod_audit_result` (`action_result`),
+  KEY `idx_discord_mod_audit_created_at` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -1,0 +1,12 @@
+{"timestamp":"2026-07-14T23:08:54+00:00","channel":"discord-direct-action-dm","context":{"action":"warning","target_user_id":"703202819674472529","message":"bg_send_discord_direct_message(): Return value must be of type array, null returned"}}
+{"timestamp":"2026-07-14T23:09:20+00:00","channel":"discord-direct-action-dm","context":{"action":"ban","target_user_id":"703202819674472529","message":"Discord API returned HTTP 403"}}
+{"timestamp":"2026-07-15T22:07:30+00:00","channel":"discord-direct-action-dm","context":{"action":"ban","target_user_id":"1527053209255018646","message":"Discord API returned HTTP 403"}}
+{"timestamp":"2026-07-20T23:33:30+00:00","channel":"discord-direct-action-dm","context":{"action":"ban","target_user_id":"695677883338719325","message":"Discord API returned HTTP 403"}}
+{"timestamp":"2026-07-21T19:50:00+00:00","channel":"discord-direct-action-dm","context":{"action":"ban","target_user_id":"1359559017294201066","message":"Discord API returned HTTP 403"}}
+{"timestamp":"2026-07-21T19:50:03+00:00","channel":"discord-direct-action-dm","context":{"action":"ban","target_user_id":"1359559017294201066","message":"Discord API returned HTTP 403"}}
+{"timestamp":"2026-07-21T19:50:07+00:00","channel":"discord-direct-action-dm","context":{"action":"ban","target_user_id":"1359559017294201066","message":"Discord API returned HTTP 403"}}
+{"timestamp":"2026-07-21T19:52:15+00:00","channel":"discord-direct-action-dm","context":{"action":"ban","target_user_id":"902118446513401858","message":"Discord API returned HTTP 403"}}
+{"timestamp":"2026-07-21T19:53:46+00:00","channel":"discord-direct-action-dm","context":{"action":"ban","target_user_id":"1507435549240070225","message":"Discord API returned HTTP 403"}}
+{"timestamp":"2026-07-21T19:55:42+00:00","channel":"discord-direct-action-dm","context":{"action":"ban","target_user_id":"1480274349461209160","message":"Discord API returned HTTP 403"}}
+{"timestamp":"2026-07-23T20:41:05+00:00","channel":"discord-direct-action-dm","context":{"action":"timeout","target_user_id":"1048697007369363487","message":"Discord API returned HTTP 403"}}
+{"timestamp":"2026-08-02T20:51:54+00:00","channel":"discord-direct-action-dm","context":{"action":"ban","target_user_id":"1048697007369363487","message":"Discord API returned HTTP 403"}}

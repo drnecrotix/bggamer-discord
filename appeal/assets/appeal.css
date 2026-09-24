@@ -1,0 +1,337 @@
+.appeal-shell,
+.appeal-success-shell {
+  min-height: 100vh;
+}
+
+.appeal-hero.section-space {
+  padding-top: clamp(1.75rem, 4vw, 3rem);
+}
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 460ms ease, transform 460ms ease;
+}
+
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.appeal-hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.22fr) minmax(280px, 0.78fr);
+  gap: clamp(1.25rem, 3vw, 2.3rem);
+  align-items: start;
+}
+
+.appeal-hero__copy h1,
+.appeal-form__head h2,
+.appeal-hero__panel h2,
+.appeal-success-card h1 {
+  margin: 0;
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+
+.appeal-hero__copy h1 {
+  max-width: 12.5ch;
+  font-size: clamp(2.45rem, 5vw, 3.9rem);
+}
+
+.appeal-hero__copy {
+  max-width: 44rem;
+  padding-top: clamp(0.8rem, 2vw, 1.5rem);
+}
+
+.appeal-hero__lead,
+.appeal-hero__panel p,
+.appeal-form__head p,
+.appeal-success-card p {
+  color: var(--text-soft);
+  line-height: 1.72;
+}
+
+.appeal-hero__lead {
+  max-width: 42rem;
+  margin: 1.1rem 0 0;
+  font-size: clamp(1rem, 2vw, 1.12rem);
+}
+
+.appeal-alert,
+.appeal-hero__panel,
+.appeal-form,
+.appeal-footer,
+.appeal-success-card {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
+}
+
+.appeal-alert {
+  margin-top: 1rem;
+  padding: 0.95rem 1rem;
+  border-radius: 18px;
+  color: var(--text);
+}
+
+.appeal-alert--warning {
+  border-color: rgba(255, 130, 96, 0.25);
+  background: rgba(255, 130, 96, 0.09);
+}
+
+.appeal-alert--error {
+  border-color: rgba(255, 130, 96, 0.25);
+  background: rgba(255, 130, 96, 0.12);
+}
+
+.appeal-hero__notes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.appeal-hero__notes div,
+.appeal-case div {
+  padding: 1rem;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.appeal-hero__notes span,
+.appeal-case dt,
+.appeal-field span,
+.appeal-counter {
+  display: block;
+  color: var(--text-dim);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.appeal-hero__notes strong,
+.appeal-case dd {
+  display: block;
+  margin-top: 0.5rem;
+  font-weight: 700;
+}
+
+.appeal-hero__panel,
+.appeal-form,
+.appeal-success-card {
+  padding: clamp(1.2rem, 2vw, 1.7rem);
+  border-radius: 26px;
+}
+
+.appeal-hero__panel {
+  width: min(100%, 29.5rem);
+  justify-self: end;
+  margin-top: clamp(0.15rem, 1vw, 0.65rem);
+}
+
+.appeal-case {
+  display: grid;
+  gap: 0.8rem;
+  margin-top: 1.35rem;
+}
+
+.appeal-case dd {
+  margin-left: 0;
+}
+
+.appeal-form {
+  display: grid;
+  gap: 1.3rem;
+}
+
+.appeal-form__head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.appeal-form__head h2 {
+  max-width: 12ch;
+  font-size: clamp(2rem, 4.2vw, 3rem);
+}
+
+.appeal-form__head p {
+  max-width: 28rem;
+  margin: 0;
+}
+
+.appeal-form__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.appeal-form__stack {
+  display: grid;
+  gap: 1rem;
+}
+
+.appeal-field {
+  display: grid;
+  gap: 0.48rem;
+}
+
+.appeal-field input,
+.appeal-field textarea {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 0.9rem 1rem;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.appeal-field textarea {
+  resize: vertical;
+  min-height: 10rem;
+}
+
+.appeal-field.has-error input,
+.appeal-field.has-error textarea,
+.appeal-check.has-error {
+  border-color: rgba(255, 130, 96, 0.45);
+}
+
+.appeal-field small,
+.appeal-check__error {
+  color: var(--warning);
+}
+
+.appeal-field__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.appeal-check {
+  display: flex;
+  align-items: start;
+  gap: 0.8rem;
+  padding: 1rem;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.appeal-check input {
+  margin-top: 0.2rem;
+}
+
+.appeal-check a,
+.appeal-footer a {
+  color: var(--discord-blue-strong);
+}
+
+.appeal-form__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.appeal-submit--pending {
+  opacity: 0.82;
+  pointer-events: none;
+}
+
+.appeal-footer {
+  margin: 0 auto 2rem;
+  width: min(calc(100% - 1.5rem), calc(var(--content-width) + 1.5rem));
+  padding: 1rem 1.2rem;
+  border-radius: 20px;
+}
+
+.appeal-footer .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.appeal-footer p {
+  margin: 0;
+  color: var(--text-soft);
+}
+
+.appeal-page--success {
+  padding: 0;
+}
+
+.appeal-page--success .appeal-success-shell {
+  min-height: calc(100vh - 80px);
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+}
+
+.appeal-success-card {
+  width: min(100%, 42rem);
+}
+
+.appeal-success-card h1 {
+  font-size: clamp(3rem, 10vw, 4.8rem);
+}
+
+.appeal-success-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin-top: 1.8rem;
+}
+
+@media (max-width: 991.98px) {
+  .appeal-hero__grid,
+  .appeal-form__grid,
+  .appeal-hero__notes,
+  .appeal-form__head,
+  .appeal-form__footer,
+  .appeal-footer .container {
+    grid-template-columns: 1fr;
+    display: grid;
+  }
+
+  .appeal-form__head p {
+    max-width: none;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .appeal-hero__copy h1 {
+    max-width: 8ch;
+    font-size: clamp(2.8rem, 13.5vw, 3.9rem);
+  }
+
+  .appeal-form,
+  .appeal-hero__panel,
+  .appeal-footer,
+  .appeal-success-card {
+    border-radius: 22px;
+  }
+
+  .appeal-field__meta,
+  .appeal-success-card__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}

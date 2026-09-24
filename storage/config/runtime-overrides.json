@@ -1,0 +1,48 @@
+{
+    "appeals": {
+        "discord_channel_id": "1526625505837584545"
+    },
+    "moderation": {
+        "role_capabilities": {
+            "moderator": [
+                "dashboard_view",
+                "server_stats_view",
+                "login_roster_view",
+                "audit_log_view",
+                "bans_view",
+                "private_reason_view",
+                "appeal_review",
+                "appeal_reject",
+                "appeal_unban",
+                "direct_ban",
+                "direct_unban",
+                "member_kick",
+                "member_warn",
+                "member_timeout",
+                "member_timeout_remove",
+                "settings_tests"
+            ],
+            "support": [
+                "dashboard_view",
+                "server_stats_view",
+                "login_roster_view",
+                "audit_log_view",
+                "bans_view",
+                "private_reason_view",
+                "appeal_review",
+                "appeal_reject",
+                "member_warn",
+                "member_timeout"
+            ],
+            "social_manager": [
+                "dashboard_view",
+                "server_stats_view",
+                "login_roster_view",
+                "audit_log_view",
+                "member_warn",
+                "member_timeout",
+                "settings_tests"
+            ]
+        }
+    }
+}
