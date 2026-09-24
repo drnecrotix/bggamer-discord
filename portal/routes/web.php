@@ -24,7 +24,6 @@ Route::get('/auth/discord/callback', [DiscordAuthController::class, 'callback'])
 Route::middleware(Staff::class)->group(function () {
     Route::get('/admin', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard', fn () => redirect()->route('dashboard'));
-    Route::get('/owner/settings', [OwnerSettingsController::class, 'edit'])->name('owner.settings');
     Route::post('/owner/discord/unlink', [OwnerSettingsController::class, 'unlink'])->middleware('throttle:5,10');
     Route::post('/logout', [DiscordAuthController::class, 'logout']);
 });
@@ -39,6 +38,8 @@ Route::middleware(Staff::class.':admin')->group(function () {
 Route::post('/announcements', [DashboardController::class, 'announce'])->middleware([Staff::class.':admin', 'throttle:3,10']);
 
 Route::middleware(OwnerOnly::class)->group(function () {
+    Route::get('/owner/settings', [OwnerSettingsController::class, 'edit'])->name('owner.settings');
+    Route::post('/owner/settings/discord', [OwnerSettingsController::class, 'updateDiscord'])->middleware('throttle:5,10');
     Route::get('/owner/updates', [UpdateController::class, 'index'])->name('owner.updates');
     Route::post('/owner/updates/check', [UpdateController::class, 'check'])->middleware('throttle:3,10');
     Route::post('/owner/updates', [UpdateController::class, 'apply'])->middleware('throttle:1,10');

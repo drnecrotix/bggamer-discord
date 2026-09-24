@@ -24,15 +24,15 @@ class DiscordAuthController extends Controller
 
     private function authorize(Request $request, string $mode)
     {
-        if (! config('discord.client_id') || ! config('discord.client_secret') || ! config('discord.redirect_uri')) {
+        if (! app(\App\Services\DiscordSettings::class)->ready()) {
             return redirect()->route('login')->withErrors(['auth' => 'Discord OAuth не е настроен. Owner може да влезе с имейл и парола.']);
         }
         $state = Str::random(48);
         $request->session()->put('discord_oauth_state', $state);
         $request->session()->put('discord_oauth_mode', $mode);
         return redirect('https://discord.com/oauth2/authorize?'.http_build_query([
-            'client_id' => config('discord.client_id'),
-            'redirect_uri' => config('discord.redirect_uri'),
+            'client_id' => app(\App\Services\DiscordSettings::class)->get('client_id'),
+            'redirect_uri' => app(\App\Services\DiscordSettings::class)->redirectUri(),
             'response_type' => 'code',
             'scope' => 'identify',
             'state' => $state,
@@ -47,11 +47,11 @@ class DiscordAuthController extends Controller
         $request->validate(['code' => 'required|string|max:2048']);
         try {
             $token = Http::asForm()->timeout(8)->post('https://discord.com/api/v10/oauth2/token', [
-                'client_id' => config('discord.client_id'),
-                'client_secret' => config('discord.client_secret'),
+                'client_id' => app(\App\Services\DiscordSettings::class)->get('client_id'),
+                'client_secret' => app(\App\Services\DiscordSettings::class)->get('client_secret'),
                 'grant_type' => 'authorization_code',
                 'code' => $request->query('code'),
-                'redirect_uri' => config('discord.redirect_uri'),
+                'redirect_uri' => app(\App\Services\DiscordSettings::class)->redirectUri(),
             ])->throw()->json('access_token');
             $identity = Http::withToken($token)->timeout(8)->get('https://discord.com/api/v10/users/@me')->throw()->json();
         } catch (Throwable $exception) {
@@ -88,9 +88,9 @@ class DiscordAuthController extends Controller
             return redirect('/')->withErrors(['auth' => 'Discord guild membership could not be verified.']);
         }
         $roles = $member['roles'] ?? [];
-        $level = count(array_intersect($roles, config('discord.admin_role_ids'))) ? 'admin'
-            : (count(array_intersect($roles, config('discord.moderator_role_ids'))) ? 'moderator'
-                : (count(array_intersect($roles, config('discord.support_role_ids'))) ? 'support' : null));
+        $level = count(array_intersect($roles, app(\App\Services\DiscordSettings::class)->get('admin_role_ids'))) ? 'admin'
+            : (count(array_intersect($roles, app(\App\Services\DiscordSettings::class)->get('moderator_role_ids'))) ? 'moderator'
+                : (count(array_intersect($roles, app(\App\Services\DiscordSettings::class)->get('support_role_ids'))) ? 'support' : null));
         abort_unless($level, 403, 'A configured staff role is required.');
         $request->session()->regenerate();
         $request->session()->put('staff', [
