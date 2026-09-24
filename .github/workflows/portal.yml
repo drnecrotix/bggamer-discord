@@ -22,6 +22,7 @@ jobs:
           extensions: mbstring, pdo_sqlite, zip
           coverage: none
       - run: composer install --no-interaction --prefer-dist
+      - run: find . -path './vendor' -prune -o -type f -name '*.php' -print0 | xargs -0 -n1 php -l
       - run: cp .env.example .env && php artisan key:generate && php artisan test
         env:
           APP_ENV: testing
