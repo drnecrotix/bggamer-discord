@@ -1,0 +1,51 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Services\Discord;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Throwable;
+
+class DashboardController extends Controller
+{
+    public function index(Discord $discord)
+    {
+        $guild = null;
+        $events = [];
+        $error = null;
+        try {
+            $guild = Cache::remember('discord.guild', 60, fn () => $discord->bot('/guilds/'.config('discord.guild_id').'?with_counts=true'));
+            $events = Cache::remember('discord.events', 60, fn () => $discord->bot('/guilds/'.config('discord.guild_id').'/scheduled-events'));
+        } catch (Throwable $exception) {
+            report($exception);
+            $error = 'Discord is unavailable. Metrics are hidden until the connection recovers.';
+        }
+        return view('dashboard', [
+            'guild' => $guild,
+            'events' => $events,
+            'error' => $error,
+            'activity' => DB::table('portal_audit')->latest()->limit(10)->get(),
+        ]);
+    }
+
+    public function announce(Request $request, Discord $discord)
+    {
+        abort_unless($request->session()->get('staff.level') === 'admin', 403);
+        $data = $request->validate(['content' => 'required|string|min:2|max:1900']);
+        try {
+            $message = $discord->publish($data['content']);
+        } catch (Throwable $exception) {
+            report($exception);
+            return back()->withErrors(['content' => 'Discord rejected the announcement. Check bot permissions and channel ID.']);
+        }
+        DB::table('portal_audit')->insert([
+            'actor_id' => $request->session()->get('staff.id'),
+            'action' => 'announcement.published',
+            'subject_id' => $message['id'] ?? null,
+            'created_at' => now(),
+        ]);
+        return back()->with('status', 'Announcement published.');
+    }
+}
