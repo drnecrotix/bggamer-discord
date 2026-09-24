@@ -10,6 +10,7 @@ use App\Http\Controllers\ServerSettingsController;
 use App\Http\Controllers\UpdateController;
 use App\Http\Controllers\KnowledgeController;
 use App\Http\Controllers\SupportTicketController;
+use App\Http\Controllers\BanAppealController;
 use App\Http\Middleware\OwnerOnly;
 use App\Http\Middleware\Staff;
 use Illuminate\Support\Facades\Route;
@@ -18,6 +19,9 @@ Route::get('/', [PageController::class, 'home'])->name('home');
 Route::get('/bans', [PublicBansController::class, 'index'])->name('bans');
 Route::get('/commands', [KnowledgeController::class, 'index'])->name('knowledge');
 Route::get('/support', [SupportTicketController::class, 'create'])->name('support.create');
+Route::get('/appeals', [BanAppealController::class, 'create'])->name('appeals.create');
+Route::post('/appeals', [BanAppealController::class, 'store'])->middleware('throttle:3,60');
+Route::post('/appeals/check', [BanAppealController::class, 'lookup'])->middleware('throttle:5,10');
 Route::post('/support', [SupportTicketController::class, 'store'])->middleware('throttle:3,60');
 Route::post('/support/check', [SupportTicketController::class, 'lookup'])->middleware('throttle:5,10');
 Route::get('/login', [OwnerAuthController::class, 'form'])->name('login');
@@ -36,6 +40,8 @@ Route::middleware(Staff::class)->group(function () {
     Route::post('/admin/tickets/{ticket}', [SupportTicketController::class, 'update'])->middleware('throttle:20,1');
 });
 Route::middleware(Staff::class.':moderator')->group(function () {
+    Route::get('/admin/appeals', [BanAppealController::class, 'index'])->name('appeals.index');
+    Route::post('/admin/appeals/{appeal}', [BanAppealController::class, 'update'])->middleware('throttle:20,1');
     Route::get('/admin/homepage', [PageController::class, 'edit'])->name('homepage.edit');
     Route::post('/admin/homepage', [PageController::class, 'update'])->middleware('throttle:10,1');
     Route::get('/admin/knowledge', [KnowledgeController::class, 'manage'])->name('knowledge.manage');

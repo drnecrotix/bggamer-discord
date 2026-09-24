@@ -19,7 +19,8 @@ class OwnerSettingsController extends Controller
             'owner' => $owner,
             'discord' => $discord->all(),
             'callbackUrl' => $discord->redirectUri(),
-            'schemaReady' => Schema::hasTable('support_tickets') && Schema::hasTable('roles'),
+            'schemaReady' => Schema::hasTable('support_tickets') && Schema::hasTable('knowledge_items')
+                && Schema::hasTable('discord_ban_appeals') && Schema::hasTable('roles'),
         ]);
     }
 
@@ -68,7 +69,8 @@ class OwnerSettingsController extends Controller
         abort_unless($owner && Hash::check($data['current_password'], $owner->password), 403);
         try {
             $exitCode = Artisan::call('migrate', ['--force' => true]);
-            if ($exitCode !== 0 || ! Schema::hasTable('support_tickets') || ! Schema::hasTable('roles')) {
+            if ($exitCode !== 0 || ! Schema::hasTable('support_tickets') || ! Schema::hasTable('knowledge_items')
+                || ! Schema::hasTable('discord_ban_appeals') || ! Schema::hasTable('roles')) {
                 return back()->withErrors(['migration' => 'Миграцията не завърши. Провери Laravel лога и правата на базата.']);
             }
         } catch (\Throwable $exception) {
