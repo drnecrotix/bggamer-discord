@@ -8,7 +8,7 @@ Options -Indexes
   RewriteRule ^portal(?:/|$) - [F,END]
 
   # These are the only public files served from Laravel's public directory.
-  RewriteRule ^(install\.php|portal\.css|favicon\.ico|robots\.txt)$ portal/public/$1 [END]
+  RewriteRule ^(install\.php|portal\.css|bootstrap\.min\.css|bootstrap\.bundle\.min\.js|favicon\.ico|robots\.txt)$ portal/public/$1 [END]
 
   # Keep legacy moderation and webhook endpoints available during migration.
   RewriteRule ^(mod|appeal|api|bans/api)(?:/|$) - [L]

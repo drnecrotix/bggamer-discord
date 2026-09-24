@@ -3,10 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Services\Discord;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
+use Spatie\Permission\Models\Role;
 use Throwable;
 
 class DiscordAuthController extends Controller
@@ -92,6 +97,17 @@ class DiscordAuthController extends Controller
             : (count(array_intersect($roles, app(\App\Services\DiscordSettings::class)->get('moderator_role_ids'))) ? 'moderator'
                 : (count(array_intersect($roles, app(\App\Services\DiscordSettings::class)->get('support_role_ids'))) ? 'support' : null));
         abort_unless($level, 403, 'A configured staff role is required.');
+        if (Schema::hasTable('roles') && Schema::hasColumn('users', 'discord_id')) {
+            $name = (string) ($member['nick'] ?? $identity['global_name'] ?? $identity['username']);
+            $user = User::firstOrCreate(['discord_id' => $identity['id']], [
+                'name' => mb_substr($name, 0, 255),
+                'email' => $identity['id'].'@discord.invalid',
+                'password' => Hash::make(Str::random(64)),
+            ]);
+            Role::findOrCreate($level, 'web');
+            $user->syncRoles([$level]);
+            Auth::login($user);
+        }
         $request->session()->regenerate();
         $request->session()->put('staff', [
             'id' => $identity['id'],
@@ -103,6 +119,7 @@ class DiscordAuthController extends Controller
 
     public function logout(Request $request)
     {
+        Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect('/');

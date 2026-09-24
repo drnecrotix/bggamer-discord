@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Services\DiscordSettings;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -17,6 +19,8 @@ class OwnerSettingsController extends Controller
             'owner' => $owner,
             'discord' => $discord->all(),
             'callbackUrl' => $discord->redirectUri(),
+            'schemaReady' => Schema::hasTable('support_tickets') && Schema::hasTable('knowledge_items')
+                && Schema::hasTable('discord_ban_appeals') && Schema::hasTable('roles'),
         ]);
     }
 
@@ -56,6 +60,24 @@ class OwnerSettingsController extends Controller
             'subject_id' => null, 'created_at' => now(),
         ]);
         return back()->with('status', 'Discord настройките са запазени.');
+    }
+
+    public function migrate(Request $request)
+    {
+        $data = $request->validate(['current_password' => 'required|string']);
+        $owner = DB::table('portal_owners')->where('id', $request->session()->get('owner_id'))->first();
+        abort_unless($owner && Hash::check($data['current_password'], $owner->password), 403);
+        try {
+            $exitCode = Artisan::call('migrate', ['--force' => true]);
+            if ($exitCode !== 0 || ! Schema::hasTable('support_tickets') || ! Schema::hasTable('knowledge_items')
+                || ! Schema::hasTable('discord_ban_appeals') || ! Schema::hasTable('roles')) {
+                return back()->withErrors(['migration' => 'Миграцията не завърши. Провери Laravel лога и правата на базата.']);
+            }
+        } catch (\Throwable $exception) {
+            report($exception);
+            return back()->withErrors(['migration' => 'Миграцията не завърши. Провери Laravel лога и правата на базата.']);
+        }
+        return back()->with('status', 'Новите таблици са готови.');
     }
 
     public function unlink(Request $request)

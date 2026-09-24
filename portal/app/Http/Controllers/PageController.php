@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PortalPage;
 use App\Services\Discord;
 use App\Services\PortalServer;
 use Illuminate\Http\Request;
@@ -26,7 +27,7 @@ class PageController extends Controller
 
     public function home(Discord $discord, PortalServer $server)
     {
-        $page = Schema::hasTable('portal_pages') ? DB::table('portal_pages')->where('slug', 'home')->first() : null;
+        $page = Schema::hasTable('portal_pages') ? PortalPage::find('home') : null;
         $guild = null;
         $error = false;
         $widget = null;
@@ -63,7 +64,7 @@ class PageController extends Controller
         $voiceCount = $widget === null ? null : collect($widget['members'] ?? [])
             ->filter(fn ($member) => is_array($member) && ! empty($member['channel_id']))->count();
         return view('home', [
-            'page' => (object) array_merge($this->defaults(), (array) $page),
+            'page' => (object) array_merge($this->defaults(), ($page?->toArray() ?? [])),
             'guild' => $guild,
             'widget' => $widget,
             'members' => $members,
@@ -75,8 +76,8 @@ class PageController extends Controller
 
     public function edit()
     {
-        $page = DB::table('portal_pages')->where('slug', 'home')->first();
-        return view('edit-home', ['page' => (object) array_merge($this->defaults(), (array) $page)]);
+        $page = PortalPage::find('home');
+        return view('edit-home', ['page' => (object) array_merge($this->defaults(), ($page?->toArray() ?? []))]);
     }
 
     public function update(Request $request)
@@ -92,9 +93,8 @@ class PageController extends Controller
             return back()->withErrors(['cta_url' => 'Use a secure HTTPS link.'])->withInput();
         }
         DB::transaction(function () use ($request, $data) {
-            DB::table('portal_pages')->updateOrInsert(['slug' => 'home'], array_merge($data, [
+            PortalPage::updateOrCreate(['slug' => 'home'], array_merge($data, [
                 'updated_by' => $request->session()->get('staff.id'),
-                'updated_at' => now(),
             ]));
             DB::table('portal_audit')->insert([
                 'actor_id' => $request->session()->get('staff.id'),

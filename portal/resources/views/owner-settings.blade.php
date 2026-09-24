@@ -13,6 +13,14 @@
     <h1>Owner настройки</h1>
     <p class="muted">{{ $owner->email }}. Входът с имейл и парола остава активен независимо от Discord.</p>
     @if(session('status'))<p class="notice success">{{ session('status') }}</p>@endif
+    @unless($schemaReady)
+    <section class="panel" style="min-height:0;margin-bottom:20px">
+        <h2>Довърши системния ъпдейт</h2>
+        <p class="muted">След качване на новия FTP архив приложи новите таблици за роли, FAQ и support tickets. Направи резервно копие на базата преди това.</p>
+        @error('migration')<p class="error">{{ $message }}</p>@enderror
+        <form method="post" action="{{ url('/owner/settings/migrate') }}">@csrf<label for="migration_password">Owner парола</label><input id="migration_password" name="current_password" type="password" autocomplete="current-password" required><button class="button">Приложи таблиците</button></form>
+    </section>
+    @endunless
     <section class="panel">
         <h2>Discord интеграция</h2>
         <p class="muted">Въведи данните от Discord Developer Portal. Точният OAuth Redirect URL, който трябва да добавиш там, е:</p>

@@ -2,9 +2,13 @@
 namespace App\Http\Middleware;
 
 use App\Services\Discord;
+use App\Models\User;
 use Closure;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
+use Spatie\Permission\Models\Role;
 use Throwable;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,6 +37,13 @@ class Staff
             : (count(array_intersect($roles, app(\App\Services\DiscordSettings::class)->get('moderator_role_ids'))) ? 'moderator'
                 : (count(array_intersect($roles, app(\App\Services\DiscordSettings::class)->get('support_role_ids'))) ? 'support' : null));
         abort_unless($level, 403);
+        if (Schema::hasTable('roles') && Auth::user() instanceof User) {
+            $user = Auth::user();
+            abort_unless($user->discord_id === $id, 403);
+            Role::findOrCreate($level, 'web');
+            $user->syncRoles([$level]);
+            abort_unless($user->hasRole($level), 403);
+        }
         $request->session()->put('staff.level', $level);
         $levels = ['support' => 1, 'moderator' => 2, 'admin' => 3];
         abort_unless($levels[$level] >= ($levels[$minimum] ?? 3), 403);
