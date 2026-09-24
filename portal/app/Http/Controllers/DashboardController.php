@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\Discord;
+use App\Services\PortalServer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -10,20 +11,21 @@ use Throwable;
 
 class DashboardController extends Controller
 {
-    public function index(Discord $discord)
+    public function index(Discord $discord, PortalServer $server)
     {
         $guild = null;
         $events = [];
         $error = null;
         try {
-            $guild = Cache::remember('discord.guild', 60, fn () => $discord->bot('/guilds/'.config('discord.guild_id').'?with_counts=true'));
-            $events = Cache::remember('discord.events', 60, fn () => $discord->bot('/guilds/'.config('discord.guild_id').'/scheduled-events'));
+            $guild = Cache::remember('discord.guild.'.$server->guildId(), 60, fn () => $discord->bot('/guilds/'.$server->guildId().'?with_counts=true'));
+            $events = Cache::remember('discord.events.'.$server->guildId(), 60, fn () => $discord->bot('/guilds/'.$server->guildId().'/scheduled-events'));
         } catch (Throwable $exception) {
             report($exception);
             $error = 'Discord is unavailable. Metrics are hidden until the connection recovers.';
         }
         return view('dashboard', [
             'guild' => $guild,
+            'server' => $server->settings(),
             'events' => $events,
             'error' => $error,
             'activity' => DB::table('portal_audit')->latest()->limit(10)->get(),

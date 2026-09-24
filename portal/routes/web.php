@@ -4,6 +4,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DiscordAuthController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PublicBansController;
+use App\Http\Controllers\ServerSettingsController;
 use App\Http\Middleware\Staff;
 use Illuminate\Support\Facades\Route;
 
@@ -19,5 +20,9 @@ Route::middleware(Staff::class)->group(function () {
 Route::middleware(Staff::class.':moderator')->group(function () {
     Route::get('/admin/homepage', [PageController::class, 'edit'])->name('homepage.edit');
     Route::post('/admin/homepage', [PageController::class, 'update'])->middleware('throttle:10,1');
+});
+Route::middleware(Staff::class.':admin')->group(function () {
+    Route::get('/admin/server', [ServerSettingsController::class, 'edit'])->name('server.edit');
+    Route::post('/admin/server', [ServerSettingsController::class, 'update'])->middleware('throttle:5,10');
 });
 Route::post('/announcements', [DashboardController::class, 'announce'])->middleware([Staff::class.':admin', 'throttle:3,10']);

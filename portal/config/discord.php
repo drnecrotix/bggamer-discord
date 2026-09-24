@@ -6,6 +6,7 @@ return [
     'redirect_uri' => env('DISCORD_REDIRECT_URI'),
     'bot_token' => env('DISCORD_BOT_TOKEN'),
     'guild_id' => env('DISCORD_GUILD_ID', '114667416247599110'),
+    'invite_code' => env('DISCORD_INVITE_CODE', 'PFkjeKBuxH'),
     'admin_role_ids' => array_filter(array_map('trim', explode(',', env('DISCORD_ADMIN_ROLE_IDS', '')))),
     'support_role_ids' => array_filter(array_map('trim', explode(',', env('DISCORD_SUPPORT_ROLE_IDS', '')))),
     'moderator_role_ids' => array_filter(array_map('trim', explode(',', env('DISCORD_MODERATOR_ROLE_IDS', '')))),

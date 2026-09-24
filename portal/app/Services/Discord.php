@@ -17,9 +17,21 @@ class Discord
         return $response->json() ?? [];
     }
 
+    public function widget(string $guildId): array
+    {
+        if (! preg_match('/^\d{17,20}$/', $guildId)) {
+            throw new RuntimeException('Invalid Discord guild ID.');
+        }
+        $response = Http::timeout(6)->get(self::API.'/guilds/'.$guildId.'/widget.json');
+        if (! $response->successful()) {
+            throw new RuntimeException('Discord widget unavailable ('.$response->status().')');
+        }
+        return $response->json() ?? [];
+    }
+
     public function member(string $userId): array
     {
-        return $this->bot('/guilds/'.config('discord.guild_id').'/members/'.$userId);
+        return $this->bot('/guilds/'.app(PortalServer::class)->guildId().'/members/'.$userId);
     }
 
     public function publish(string $content): array

@@ -35,3 +35,7 @@ The public ban list needs the same MySQL database as the existing legacy ban cen
 ## Secrets
 
 The GitHub project contains environment variable names and public Discord identifiers, not usable bot credentials. Keep real values in server environment variables or an untracked `.env` outside the public document root. Never copy credentials from a public commit into production without rotating them. Tracked runtime logs/cache were removed from source control; historical Git commits remain public, so rotate any credentials that were ever committed.
+
+## Server landing page
+
+Admin can set a Discord Server ID and invite code at `/admin/server`. Saving requires the bot to verify the guild before updating the setting. The public `/` page and admin dashboard read this selected guild. The bot token remains in server environment configuration. Public counts come from the Discord guild endpoint and are cached for 60 seconds. The avatar row and visible voice-member count use Discord's public Server Widget; enable **Server Settings → Widget** in Discord if you want these displayed. The widget may expose only a subset of online members, so voice is labelled as a visible count rather than an exact whole-server count. No synthetic statistics are shown when either API is unavailable.

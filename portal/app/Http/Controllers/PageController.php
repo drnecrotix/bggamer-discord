@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Discord;
+use App\Services\PortalServer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Throwable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
@@ -20,10 +24,53 @@ class PageController extends Controller
         ];
     }
 
-    public function home()
+    public function home(Discord $discord, PortalServer $server)
     {
         $page = Schema::hasTable('portal_pages') ? DB::table('portal_pages')->where('slug', 'home')->first() : null;
-        return view('home', ['page' => (object) array_merge($this->defaults(), (array) $page)]);
+        $guild = null;
+        $error = false;
+        $widget = null;
+        $guildId = $server->guildId();
+        if (preg_match('/^\d{17,20}$/', $guildId) && config('discord.bot_token')) {
+            try {
+                $guild = Cache::remember('discord.guild.'.$guildId, 60,
+                    fn () => $discord->bot('/guilds/'.$guildId.'?with_counts=true'));
+            } catch (Throwable $exception) {
+                report($exception);
+                $error = true;
+            }
+        } else {
+            $error = true;
+        }
+        if (preg_match('/^\d{17,20}$/', $guildId)) {
+            try {
+                $widget = Cache::remember('discord.widget.'.$guildId, 60,
+                    fn () => $discord->widget($guildId));
+            } catch (Throwable $exception) {
+                report($exception);
+            }
+        }
+        $members = collect($widget['members'] ?? [])
+            ->filter(fn ($member) => is_array($member)
+                && isset($member['avatar_url'])
+                && is_string($member['avatar_url'])
+                && preg_match('~^https://(?:cdn\.discordapp\.com|media\.discordapp\.net)/~', $member['avatar_url']))
+            ->take(8)
+            ->map(fn ($member) => [
+                'name' => mb_substr((string) ($member['username'] ?? 'Member'), 0, 64),
+                'avatar' => $member['avatar_url'],
+            ])->values()->all();
+        $voiceCount = $widget === null ? null : collect($widget['members'] ?? [])
+            ->filter(fn ($member) => is_array($member) && ! empty($member['channel_id']))->count();
+        return view('home', [
+            'page' => (object) array_merge($this->defaults(), (array) $page),
+            'guild' => $guild,
+            'widget' => $widget,
+            'members' => $members,
+            'voiceCount' => $voiceCount,
+            'error' => $error,
+            'inviteUrl' => $server->inviteUrl(),
+        ]);
     }
 
     public function edit()
