@@ -10,7 +10,7 @@ class Discord
 
     public function bot(string $path): array
     {
-        $response = Http::withToken(config('discord.bot_token'))->timeout(8)->get(self::API.$path);
+        $response = Http::withToken(app(DiscordSettings::class)->get('bot_token'))->timeout(8)->get(self::API.$path);
         if (! $response->successful()) {
             throw new RuntimeException('Discord API unavailable ('.$response->status().')');
         }
@@ -36,11 +36,11 @@ class Discord
 
     public function publish(string $content): array
     {
-        $channel = config('discord.announcement_channel_id');
+        $channel = app(DiscordSettings::class)->get('announcement_channel_id');
         if (! $channel || ! preg_match('/^\d{17,20}$/', $channel)) {
             throw new RuntimeException('Announcement channel is not configured.');
         }
-        $response = Http::withToken(config('discord.bot_token'))->timeout(8)
+        $response = Http::withToken(app(DiscordSettings::class)->get('bot_token'))->timeout(8)
             ->post(self::API.'/channels/'.$channel.'/messages', [
                 'content' => $content,
                 'allowed_mentions' => ['parse' => []],

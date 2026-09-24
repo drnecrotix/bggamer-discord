@@ -29,9 +29,9 @@ class Staff
             report($exception);
             abort(503, 'Cannot verify Discord staff role.');
         }
-        $level = count(array_intersect($roles, config('discord.admin_role_ids'))) ? 'admin'
-            : (count(array_intersect($roles, config('discord.moderator_role_ids'))) ? 'moderator'
-                : (count(array_intersect($roles, config('discord.support_role_ids'))) ? 'support' : null));
+        $level = count(array_intersect($roles, app(\App\Services\DiscordSettings::class)->get('admin_role_ids'))) ? 'admin'
+            : (count(array_intersect($roles, app(\App\Services\DiscordSettings::class)->get('moderator_role_ids'))) ? 'moderator'
+                : (count(array_intersect($roles, app(\App\Services\DiscordSettings::class)->get('support_role_ids'))) ? 'support' : null));
         abort_unless($level, 403);
         $request->session()->put('staff.level', $level);
         $levels = ['support' => 1, 'moderator' => 2, 'admin' => 3];

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Services\DiscordSettings;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -93,5 +94,34 @@ class OwnerAccessTest extends TestCase
         $this->assertDatabaseHas('portal_owners', ['id' => $id, 'discord_id' => '123456789012345678']);
         $this->post('/owner/discord/unlink', ['password' => 'very-long-owner-password'])->assertRedirect();
         $this->assertDatabaseHas('portal_owners', ['id' => $id, 'discord_id' => null]);
+    }
+
+    public function test_owner_saves_encrypted_discord_settings_from_panel(): void
+    {
+        $file = tempnam(sys_get_temp_dir(), 'discord-test-');
+        unlink($file);
+        $settings = new DiscordSettings($file);
+        $this->app->instance(DiscordSettings::class, $settings);
+        config()->set('app.url', 'https://bg-gamer.com/discord');
+        $id = $this->owner();
+        $this->withSession(['owner_id' => $id, 'staff' => ['id' => 'owner:'.$id, 'level' => 'admin']]);
+        try {
+            $this->post('/owner/settings/discord', [
+                'client_id' => '123456789012345678',
+                'client_secret' => 'private-discord-secret',
+                'bot_token' => 'private-bot-token',
+                'admin_role_ids' => '234567890123456789',
+                'moderator_role_ids' => '',
+                'support_role_ids' => '',
+                'current_password' => 'very-long-owner-password',
+            ])->assertRedirect();
+            $this->assertStringNotContainsString('private-discord-secret', file_get_contents($file));
+            $this->assertSame('private-bot-token', $settings->get('bot_token'));
+            $this->assertSame(['234567890123456789'], $settings->get('admin_role_ids'));
+            $this->get('/owner/settings')->assertOk()->assertSee('https://bg-gamer.com/discord/auth/discord/callback');
+            $this->get('/auth/discord')->assertRedirect();
+        } finally {
+            @unlink($file);
+        }
     }
 }

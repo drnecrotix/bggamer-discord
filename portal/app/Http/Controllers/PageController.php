@@ -31,7 +31,7 @@ class PageController extends Controller
         $error = false;
         $widget = null;
         $guildId = $server->guildId();
-        if (preg_match('/^\d{17,20}$/', $guildId) && config('discord.bot_token')) {
+        if (preg_match('/^\d{17,20}$/', $guildId) && app(\App\Services\DiscordSettings::class)->get('bot_token')) {
             try {
                 $guild = Cache::remember('discord.guild.'.$guildId, 60,
                     fn () => $discord->bot('/guilds/'.$guildId.'?with_counts=true'));

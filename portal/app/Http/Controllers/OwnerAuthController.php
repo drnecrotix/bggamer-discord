@@ -13,7 +13,7 @@ class OwnerAuthController extends Controller
     public function form()
     {
         return view('login', [
-            'discordReady' => config('discord.client_id') && config('discord.client_secret') && config('discord.redirect_uri'),
+            'discordReady' => app(\App\Services\DiscordSettings::class)->ready(),
         ]);
     }
 
