@@ -21,6 +21,8 @@ jobs:
           php-version: '8.3'
           extensions: mbstring, pdo_sqlite, zip
           coverage: none
+      - run: php -l index.php && test ! -e index.html
+        working-directory: .
       - run: composer install --no-interaction --prefer-dist
       - run: find . -path './vendor' -prune -o -type f -name '*.php' -print0 | xargs -0 -n1 php -l
       - run: cp .env.example .env && php artisan key:generate && php artisan test
