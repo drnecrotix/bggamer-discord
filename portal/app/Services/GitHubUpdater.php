@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
 use RuntimeException;
 use ZipArchive;
 
@@ -12,11 +13,30 @@ class GitHubUpdater
     private const RELEASE_URL = 'https://api.github.com/repos/drnecrotix/bggamer-discord/releases/latest';
     private const ASSET = 'bggamer-portal.zip';
 
-    public function latest(): ?array
+    public function currentVersion(): string
+    {
+        $installed = \Illuminate\Support\Facades\DB::table('portal_updates')->latest()->value('version');
+        $bundled = trim((string) @file_get_contents(base_path('VERSION')));
+        return $installed ?: ($bundled ?: '0.1.0');
+    }
+
+    public function available(?array $release): bool
+    {
+        return (bool) ($release['ready'] ?? false)
+            && version_compare(ltrim($release['version'], 'v'), ltrim($this->currentVersion(), 'v'), '>');
+    }
+
+    public function latest(bool $refresh = false): ?array
+    {
+        if ($refresh) { Cache::forget('portal.github.latest'); }
+        return Cache::remember('portal.github.latest', now()->addMinutes(15), fn () => $this->fetchLatest());
+    }
+
+    private function fetchLatest(): ?array
     {
         $response = Http::acceptJson()->withHeaders(['User-Agent' => 'BG-GAMER-Portal'])
             ->timeout(8)->get(self::RELEASE_URL);
-        if ($response->status() === 404) { return null; }
+        if ($response->status() === 404) { return ['version' => null, 'ready' => false]; }
         if (! $response->successful()) { throw new RuntimeException('GitHub releases are unavailable.'); }
         $release = $response->json();
         $asset = collect($release['assets'] ?? [])->firstWhere('name', self::ASSET);

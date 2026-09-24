@@ -1,11 +1,9 @@
 name: Package portal release
 on:
+  push:
+    branches: [main]
+    paths: ['portal/RELEASE_VERSION']
   workflow_dispatch:
-    inputs:
-      version:
-        description: 'Release tag, e.g. v1.0.0'
-        required: true
-        type: string
 permissions:
   contents: write
 jobs:
@@ -16,12 +14,30 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Validate release and compatibility
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, pdo_sqlite, zip
+          coverage: none
+      - name: Test portal
+        working-directory: portal
         env:
-          VERSION: ${{ inputs.version }}
+          APP_ENV: testing
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ':memory:'
+          SESSION_DRIVER: array
+          CACHE_STORE: array
+          QUEUE_CONNECTION: sync
         run: |
-          [[ "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit 1
-          git rev-parse "$VERSION" >/dev/null 2>&1 && { echo 'Tag already exists'; exit 1; }
+          composer install --no-interaction --prefer-dist
+          cp .env.example .env
+          php artisan key:generate
+          php artisan test
+      - name: Validate release and compatibility
+        run: |
+          version=$(cat portal/RELEASE_VERSION)
+          [[ "$version" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit 1
+          git rev-parse "$version" >/dev/null 2>&1 && { echo 'Tag already exists'; exit 1; }
           previous=$(git tag --list 'v[0-9]*' | sort -V | tail -1)
           if [ -n "$previous" ]; then
             if git diff --name-only "$previous" HEAD -- portal/database/migrations portal/composer.json | grep -q .; then
@@ -38,5 +54,6 @@ jobs:
       - name: Publish GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
-          VERSION: ${{ inputs.version }}
-        run: gh release create "$VERSION" bggamer-portal.zip --target "$GITHUB_SHA" --title "BG-GAMER Portal $VERSION" --notes 'Code-only portal update. No database migrations or Composer dependency changes.'
+        run: |
+          version=$(cat portal/RELEASE_VERSION)
+          gh release create "$version" bggamer-portal.zip --target "$GITHUB_SHA" --title "BG-GAMER Portal $version" --notes 'Code-only portal update. No database migrations or Composer dependency changes.'

@@ -13,19 +13,26 @@ class UpdateController extends Controller
     {
         try { $release = $updater->latest(); }
         catch (Throwable $exception) { report($exception); $release = null; }
-        $current = DB::table('portal_updates')->latest()->value('version') ?? '0.1.0';
-        return view('updates', compact('release', 'current'));
+        $current = $updater->currentVersion();
+        $available = $updater->available($release);
+        return view('updates', compact('release', 'current', 'available'));
+    }
+
+    public function check(GitHubUpdater $updater)
+    {
+        try { $updater->latest(true); }
+        catch (Throwable $exception) { report($exception); return back()->withErrors(['version' => 'GitHub check failed.']); }
+        return back()->with('status', 'GitHub check completed.');
     }
 
     public function apply(Request $request, GitHubUpdater $updater)
     {
         $data = $request->validate(['version' => 'required|string|max:80']);
         try {
-            $release = $updater->latest();
+            $release = $updater->latest(true);
             if (! $release || ! ($release['ready'] ?? false)
                 || $release['version'] !== $data['version']
-                || version_compare(ltrim($release['version'], 'v'),
-                    ltrim(DB::table('portal_updates')->latest()->value('version') ?? '0.1.0', 'v'), '<=')) {
+                || ! $updater->available($release)) {
                 return back()->withErrors(['version' => 'No verified newer release is available.']);
             }
             $count = $updater->apply($release);

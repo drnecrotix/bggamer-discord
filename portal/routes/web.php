@@ -38,5 +38,6 @@ Route::post('/announcements', [DashboardController::class, 'announce'])->middlew
 
 Route::middleware(OwnerOnly::class)->group(function () {
     Route::get('/owner/updates', [UpdateController::class, 'index'])->name('owner.updates');
+    Route::post('/owner/updates/check', [UpdateController::class, 'check'])->middleware('throttle:3,10');
     Route::post('/owner/updates', [UpdateController::class, 'apply'])->middleware('throttle:1,10');
 });

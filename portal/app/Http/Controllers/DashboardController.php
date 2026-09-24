@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\Discord;
 use App\Services\PortalServer;
+use App\Services\GitHubUpdater;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -23,7 +24,13 @@ class DashboardController extends Controller
             report($exception);
             $error = 'Discord is unavailable. Metrics are hidden until the connection recovers.';
         }
+        $updateAvailable = false;
+        if (session()->has('owner_id')) {
+            try { $updateAvailable = app(GitHubUpdater::class)->available(app(GitHubUpdater::class)->latest()); }
+            catch (Throwable $exception) { report($exception); }
+        }
         return view('dashboard', [
+            'updateAvailable' => $updateAvailable,
             'guild' => $guild,
             'server' => $server->settings(),
             'events' => $events,
