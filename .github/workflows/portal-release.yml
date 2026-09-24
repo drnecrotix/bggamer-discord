@@ -47,6 +47,8 @@ jobs:
           fi
       - name: Build code-only ZIP
         run: |
+          cp portal/vendor/twbs/bootstrap/dist/css/bootstrap.min.css portal/public/bootstrap.min.css
+          cp portal/vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js portal/public/bootstrap.bundle.min.js
           zip -qr bggamer-portal.zip portal/app portal/config portal/resources portal/routes portal/public -x 'portal/public/install.php'
           unzip -l bggamer-portal.zip | grep -q 'portal/app/Services/Discord.php'
           unzip -l bggamer-portal.zip | grep -q 'portal/routes/web.php'

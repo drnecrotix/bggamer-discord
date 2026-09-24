@@ -8,3 +8,6 @@
 .owner-link{color:#748796;font-size:11px}
 
 .update-badge{margin-left:5px;padding:2px 5px;background:#f57931;color:#111;font-size:9px}.update-check{margin:20px 0}
+
+/* Keep Bootstrap utilities within the portal theme. */
+body{background:#0b1017;color:#eff4f8}

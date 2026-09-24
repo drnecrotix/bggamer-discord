@@ -33,6 +33,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          cp portal/vendor/twbs/bootstrap/dist/css/bootstrap.min.css portal/public/bootstrap.min.css
+          cp portal/vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js portal/public/bootstrap.bundle.min.js
           mkdir -p ftp/portal
           cp .htaccess index.php ftp/
           cp -a mod appeal api bans assets config database style.css check-db.php ftp/
@@ -46,6 +48,7 @@ jobs:
           php -r 'file_put_contents("ftp/portal/storage/app/install.key", bin2hex(random_bytes(32)));'
           test -f ftp/portal/vendor/autoload.php
           test -f ftp/portal/public/install.php
+          test -f ftp/portal/public/bootstrap.min.css
           test -f ftp/portal/.env.example
           test -f ftp/portal/storage/app/install.key
           test ! -e ftp/portal/.env
