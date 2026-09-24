@@ -29,27 +29,34 @@ jobs:
       - name: Install production dependencies
         working-directory: portal
         run: composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
-      - name: Package FTP overlay
+      - name: Package complete FTP installation
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p ftp/portal
           cp .htaccess index.php ftp/
+          cp -a mod appeal api bans assets config database style.css check-db.php ftp/
           rsync -a portal/ ftp/portal/ \
             --exclude='.env' --exclude='.env.*' --exclude='auth.json' \
             --exclude='tests/' --exclude='node_modules/' --exclude='public/hot' \
             --exclude='bootstrap/cache/*.php' --exclude='storage/logs/*.log' \
             --exclude='storage/app/install.key' --exclude='storage/app/installed.lock'
+          cp portal/.env.example ftp/portal/.env.example
+          umask 077
+          php -r 'file_put_contents("ftp/portal/storage/app/install.key", bin2hex(random_bytes(32)));'
           test -f ftp/portal/vendor/autoload.php
           test -f ftp/portal/public/install.php
+          test -f ftp/portal/.env.example
+          test -f ftp/portal/storage/app/install.key
           test ! -e ftp/portal/.env
           test ! -e ftp/portal/bootstrap/cache/config.php
           (cd ftp && zip -qr ../bggamer-ftp-install.zip .)
           unzip -Z1 bggamer-ftp-install.zip | grep -qx 'portal/vendor/autoload.php'
-          if unzip -Z1 bggamer-ftp-install.zip | grep -Eq '(^|/)(\.env|install\.key|installed\.lock|config\.php)$'; then
+          if unzip -Z1 bggamer-ftp-install.zip | grep -Eq '(^|/)(\.env|installed\.lock|config\.php)$'; then
             echo 'Private configuration was packaged.' >&2
             exit 1
           fi
+          test ! -e ftp/index.html
           sha256sum bggamer-ftp-install.zip
       - uses: actions/upload-artifact@v4
         with:
