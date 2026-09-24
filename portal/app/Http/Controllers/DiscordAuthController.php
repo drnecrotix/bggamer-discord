@@ -24,7 +24,9 @@ class DiscordAuthController extends Controller
 
     private function authorize(Request $request, string $mode)
     {
-        abort_unless(config('discord.client_id') && config('discord.client_secret') && config('discord.redirect_uri'), 503);
+        if (! config('discord.client_id') || ! config('discord.client_secret') || ! config('discord.redirect_uri')) {
+            return redirect()->route('login')->withErrors(['auth' => 'Discord OAuth не е настроен. Owner може да влезе с имейл и парола.']);
+        }
         $state = Str::random(48);
         $request->session()->put('discord_oauth_state', $state);
         $request->session()->put('discord_oauth_mode', $mode);

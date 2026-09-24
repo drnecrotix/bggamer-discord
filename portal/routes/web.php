@@ -14,9 +14,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PageController::class, 'home'])->name('home');
 Route::get('/bans', [PublicBansController::class, 'index'])->name('bans');
-Route::get('/owner/login', [OwnerAuthController::class, 'form'])->name('owner.login');
+Route::get('/login', [OwnerAuthController::class, 'form'])->name('login');
+Route::post('/login', [OwnerAuthController::class, 'login'])->middleware('throttle:5,10');
+Route::get('/owner/login', fn () => redirect()->route('login'))->name('owner.login');
 Route::post('/owner/login', [OwnerAuthController::class, 'login'])->middleware('throttle:5,10');
-Route::get('/auth/discord', [DiscordAuthController::class, 'redirect'])->name('login');
+Route::get('/auth/discord', [DiscordAuthController::class, 'redirect'])->name('discord.login');
 Route::get('/owner/discord/link', [DiscordAuthController::class, 'link'])->middleware(Staff::class)->name('owner.discord.link');
 Route::get('/auth/discord/callback', [DiscordAuthController::class, 'callback']);
 Route::middleware(Staff::class)->group(function () {

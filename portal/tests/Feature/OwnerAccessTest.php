@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Schema;
 use Tests\TestCase;
 
 class OwnerAccessTest extends TestCase
@@ -30,6 +31,28 @@ class OwnerAccessTest extends TestCase
         ])->assertRedirect('/admin');
         $this->assertSame($id, session('owner_id'));
         $this->get('/admin/server')->assertOk();
+    }
+
+    public function test_one_login_offers_owner_and_discord_paths(): void
+    {
+        config()->set('discord.client_id', '123');
+        config()->set('discord.client_secret', 'test');
+        config()->set('discord.redirect_uri', 'https://example.com/discord/auth/discord/callback');
+        $this->get('/login')->assertOk()->assertSee('Вход като Owner')->assertSee('Вход с Discord');
+        $this->get('/owner/login')->assertRedirect('/login');
+    }
+
+    public function test_incomplete_installation_shows_recovery_instead_of_server_error(): void
+    {
+        Schema::drop('portal_owners');
+        $this->post('/login', ['email' => 'owner@example.com', 'password' => 'any-password'])
+            ->assertSessionHasErrors('email');
+    }
+
+    public function test_missing_discord_configuration_returns_to_shared_login(): void
+    {
+        config()->set('discord.client_id', null);
+        $this->get('/auth/discord')->assertRedirect('/login')->assertSessionHasErrors('auth');
     }
 
     public function test_wrong_password_cannot_sign_in(): void
