@@ -45,7 +45,8 @@ class DiscordAuthController extends Controller
         }
         $roles = $member['roles'] ?? [];
         $level = count(array_intersect($roles, config('discord.admin_role_ids'))) ? 'admin'
-            : (count(array_intersect($roles, config('discord.moderator_role_ids'))) ? 'moderator' : null);
+            : (count(array_intersect($roles, config('discord.moderator_role_ids'))) ? 'moderator'
+                : (count(array_intersect($roles, config('discord.support_role_ids'))) ? 'support' : null));
         abort_unless($level, 403, 'A configured staff role is required.');
         $request->session()->regenerate();
         $request->session()->put('staff', [

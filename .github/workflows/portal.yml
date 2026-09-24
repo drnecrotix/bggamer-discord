@@ -1,0 +1,32 @@
+name: Laravel portal
+on:
+  pull_request:
+    paths:
+      - 'portal/**'
+      - '.github/workflows/portal.yml'
+  push:
+    paths:
+      - 'portal/**'
+      - '.github/workflows/portal.yml'
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: portal
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, pdo_sqlite
+          coverage: none
+      - run: composer install --no-interaction --prefer-dist
+      - run: cp .env.example .env && php artisan key:generate && php artisan test
+        env:
+          APP_ENV: testing
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ':memory:'
+          SESSION_DRIVER: array
+          CACHE_STORE: array
+          QUEUE_CONNECTION: sync
