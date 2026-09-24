@@ -1,0 +1,59 @@
+name: Build FTP installer
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'portal/**'
+      - 'index.php'
+      - '.htaccess'
+      - '.github/workflows/ftp-install.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'portal/**'
+      - 'index.php'
+      - '.htaccess'
+      - '.github/workflows/ftp-install.yml'
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, pdo_mysql, pdo_pgsql, zip
+          coverage: none
+      - name: Install production dependencies
+        working-directory: portal
+        run: composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+      - name: Package FTP overlay
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p ftp/portal
+          cp .htaccess index.php ftp/
+          rsync -a portal/ ftp/portal/ \
+            --exclude='.env' --exclude='.env.*' --exclude='auth.json' \
+            --exclude='tests/' --exclude='node_modules/' --exclude='public/hot' \
+            --exclude='bootstrap/cache/*.php' --exclude='storage/logs/*.log' \
+            --exclude='storage/app/install.key' --exclude='storage/app/installed.lock'
+          test -f ftp/portal/vendor/autoload.php
+          test -f ftp/portal/public/install.php
+          test ! -e ftp/portal/.env
+          test ! -e ftp/portal/bootstrap/cache/config.php
+          (cd ftp && zip -qr ../bggamer-ftp-install.zip .)
+          unzip -Z1 bggamer-ftp-install.zip | grep -qx 'portal/vendor/autoload.php'
+          if unzip -Z1 bggamer-ftp-install.zip | grep -Eq '(^|/)(\.env|install\.key|installed\.lock|config\.php)$'; then
+            echo 'Private configuration was packaged.' >&2
+            exit 1
+          fi
+          sha256sum bggamer-ftp-install.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bggamer-ftp-install
+          path: bggamer-ftp-install.zip
+          if-no-files-found: error
+          retention-days: 14
