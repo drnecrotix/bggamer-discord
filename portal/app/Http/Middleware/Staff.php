@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 use App\Services\Discord;
 use Closure;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Throwable;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,6 +13,12 @@ class Staff
 {
     public function handle(Request $request, Closure $next, string $minimum = 'support'): Response
     {
+        $ownerId = $request->session()->get('owner_id');
+        if ($ownerId) {
+            $owner = DB::table('portal_owners')->where('id', $ownerId)->exists();
+            abort_unless($owner, 403);
+            return $next($request);
+        }
         $staff = $request->session()->get('staff');
         abort_unless(is_array($staff) && isset($staff['id']), 403);
         $id = (string) $staff['id'];

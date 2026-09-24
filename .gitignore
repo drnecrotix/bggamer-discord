@@ -6,3 +6,6 @@ storage/logs/*
 .env
 .env.*
 *.private.php
+portal/storage/app/install.key
+portal/storage/app/installed.lock
+portal/storage/app/update-backups/
