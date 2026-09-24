@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PortalOwner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -27,7 +28,7 @@ class OwnerAuthController extends Controller
             if (! Schema::hasTable('portal_owners')) {
                 return back()->withErrors(['email' => 'Инсталацията не е завършена. Отвори /install.php и довърши настройката.']);
             }
-            $owner = DB::table('portal_owners')->where('email', mb_strtolower($credentials['email']))->first();
+            $owner = PortalOwner::where('email', mb_strtolower($credentials['email']))->first();
         } catch (Throwable $exception) {
             report($exception);
             return back()->withErrors(['email' => 'Базата данни не е достъпна. Провери настройките и логовете на сървъра.']);
